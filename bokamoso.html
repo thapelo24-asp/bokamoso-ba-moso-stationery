@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bokamoso ba Moso | Promise of Tomorrow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Variables for Red & White Theme */
+        :root {
+            --primary-bg: #0a0a0a;
+            --secondary-bg: #1a1a1a;
+            --accent-primary: #ff3333;
+            --accent-secondary: #ff6666;
+            --accent-glow: #ff4444;
+            --text-primary: #ffffff;
+            --text-secondary: #e0e0e0;
+            --card-bg: rgba(40, 40, 40, 0.7);
+            --border-glow: rgba(255, 68, 68, 0.3);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 51, 51, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 102, 102, 0.05) 0%, transparent 20%);
+        }
+
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        h1 { 
+            font-size: 3.5rem; 
+            font-weight: 800;
+        }
+        h2 { font-size: 2.5rem; }
+        h3 { font-size: 1.8rem; }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 800px;
+            line-height: 1.5;
+        }
+
+        .slogan {
+            font-size: 1.8rem;
+            color: var(--accent-primary);
+            font-weight: 600;
+            margin: 1rem 0 2rem 0;
+            padding: 0.5rem 1rem;
+            border-left: 3px solid var(--accent-primary);
+            background: rgba(255, 51, 51, 0.05);
+            border-radius: 0 10px 10px 0;
+        }
+
+        /* Glowing Elements */
+        .glow-effect {
+            position: relative;
+        }
+
+        .glow-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: inherit;
+            box-shadow: 0 0 20px var(--border-glow);
+            opacity: 0;
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        .glow-effect:hover::after {
+            opacity: 1;
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background-color: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 68, 68, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            color: var(--text-primary);
+            font-weight: 400;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-secondary);
+        }
+
+        .nav-icons i:hover {
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--accent-primary);
+            color: white;
+            font-size: 0.7rem;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--accent-primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 12rem 5% 6rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .hero h1 {
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+            color: var(--text-secondary);
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .slogan {
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 68, 68, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent-primary);
+            border: 2px solid var(--accent-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 68, 68, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 68, 68, 0.2);
+        }
+
+        /* Value Pillars */
+        .value-pillars {
+            padding: 5rem 5%;
+            background-color: var(--secondary-bg);
+        }
+
+        .pillars-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pillar-card {
+            background-color: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .pillar-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--border-glow);
+        }
+
+        .pillar-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-primary);
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 6rem 5%;
+            background-color: var(--secondary-bg);
+        }
+
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .contact-info {
+            background-color: var(--card-bg);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .contact-methods {
+            margin-top: 2rem;
+        }
+
+        .contact-method {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .contact-method:hover {
+            border-color: var(--border-glow);
+            transform: translateY(-5px);
+        }
+
+        .contact-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .contact-details h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-details p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .contact-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .contact-link:hover {
+            text-decoration: underline;
+        }
+
+        .contact-form {
+            background-color: var(--card-bg);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* Collections */
+        .collections {
+            padding: 6rem 5%;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .collections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .collection-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: var(--transition);
+            height: 400px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .collection-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--border-glow);
+        }
+
+        .collection-image {
+            height: 70%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .collection-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .collection-card:hover .collection-image img {
+            transform: scale(1.05);
+        }
+
+        .collection-content {
+            padding: 1.5rem;
+            height: 30%;
+        }
+
+        /* Products */
+        .products {
+            padding: 6rem 5%;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--border-glow);
+        }
+
+        .product-image {
+            height: 200px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        .product-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .product-content {
+            padding: 1.5rem;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin: 0.5rem 0;
+        }
+
+        .product-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .btn-add-cart {
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-add-cart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 68, 68, 0.3);
+        }
+
+        .btn-wishlist {
+            background: transparent;
+            border: 1px solid var(--accent-secondary);
+            color: var(--accent-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-wishlist:hover {
+            background-color: rgba(255, 102, 102, 0.1);
+        }
+
+        .btn-wishlist.active {
+            background-color: var(--accent-secondary);
+            color: white;
+        }
+
+        /* Cart Sidebar */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 380px;
+            height: 100%;
+            background-color: var(--secondary-bg);
+            z-index: 2000;
+            transition: var(--transition);
+            padding: 2rem;
+            border-left: 1px solid rgba(255, 68, 68, 0.1);
+            overflow-y: auto;
+        }
+
+        .cart-sidebar.active {
+            right: 0;
+            box-shadow: -10px 0 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .cart-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .cart-close:hover {
+            color: var(--accent-primary);
+        }
+
+        .cart-items {
+            margin-bottom: 2rem;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .cart-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cart-item-details {
+            flex: 1;
+        }
+
+        .cart-item-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-price {
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .cart-item-qty {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .qty-btn {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .qty-btn:hover {
+            background-color: var(--accent-primary);
+            color: white;
+        }
+
+        .remove-item {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            margin-left: 1rem;
+        }
+
+        .remove-item:hover {
+            color: #ff3b3b;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 2rem 0;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .cart-empty {
+            text-align: center;
+            padding: 3rem 0;
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 5rem 5% 2rem;
+            background-color: var(--primary-bg);
+            border-top: 1px solid rgba(255, 68, 68, 0.1);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-primary);
+            padding-left: 5px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            margin-top: 1.5rem;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border-radius: 50px 0 0 50px;
+            outline: none;
+        }
+
+        .newsletter-form button {
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 0 50px 50px 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .newsletter-form button:hover {
+            opacity: 0.9;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background-color: var(--accent-primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .social-links a.whatsapp:hover {
+            background-color: #25D366;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(255, 68, 68, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(255, 68, 68, 0.6);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            h1 { font-size: 2.8rem; }
+            h2 { font-size: 2.2rem; }
+            
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background-color: var(--secondary-bg);
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding-top: 3rem;
+                transition: var(--transition);
+                gap: 2rem;
+            }
+            
+            .nav-links.active {
+                left: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 10rem 5% 4rem;
+            }
+            
+            .slogan {
+                font-size: 1.4rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .contact-info,
+            .contact-form {
+                padding: 2rem;
+            }
+            
+            .collections-grid, 
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: var(--transition);
+            z-index: 3000;
+            max-width: 350px;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Currency Symbol */
+        .currency {
+            font-size: 0.8em;
+            margin-right: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">Bokamoso<span>baMoso</span></div>
+        
+        <div class="nav-links" id="navLinks">
+            <a href="#home">Home</a>
+            <a href="#collections">Collections</a>
+            <a href="#products">Products</a>
+            <a href="#contact">Contact Us</a>
+            <a href="#services">Services</a>
+        </div>
+        
+        <div class="nav-icons">
+            <div class="cart-icon" style="position: relative;">
+                <i class="fas fa-shopping-bag" id="cartToggle"></i>
+                <span class="cart-count" id="cartCount">0</span>
+            </div>
+            <i class="fas fa-search"></i>
+            <i class="fas fa-user"></i>
+            <div class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button class="cart-close" id="cartClose">&times;</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items will be inserted here by JavaScript -->
+            <div class="cart-empty" id="cartEmpty">
+                <i class="fas fa-shopping-bag" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                <p>Your cart is empty</p>
+                <p style="font-size: 0.9rem; margin-top: 0.5rem;">Add some promises to your tomorrow</p>
+            </div>
+        </div>
+        <div class="cart-total" id="cartTotal" style="display: none;">
+            <span>Total:</span>
+            <span id="totalAmount">R 0.00</span>
+        </div>
+        <button class="btn btn-primary" id="checkoutBtn" style="width: 100%; display: none;">Checkout</button>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-background"></div>
+        <h1 class="glow-effect">Bokamoso ba Moso</h1>
+        <p class="subtitle">The Promise of Tomorrow, Written Today. Premium stationery for dreamers, planners, and creators shaping the future.</p>
+        <div class="slogan">We let our services speak for themselves. Try Us!</div>
+        <div class="cta-buttons">
+            <a href="#collections" class="btn btn-primary pulse">
+                <i class="fas fa-rocket"></i> Explore Collections
+            </a>
+            <a href="#contact" class="btn btn-secondary">
+                <i class="fas fa-phone-alt"></i> Contact Us
+            </a>
+        </div>
+    </section>
+
+    <!-- Value Pillars -->
+    <section class="value-pillars">
+        <div class="pillars-container">
+            <div class="pillar-card glow-effect">
+                <div class="pillar-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3>Premium Quality</h3>
+                <p>Only the finest materials crafted into stationery that lasts for generations.</p>
+            </div>
+            
+            <div class="pillar-card glow-effect">
+                <div class="pillar-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h3>Trusted Service</h3>
+                <p>Our reputation is built on satisfied customers and exceptional service.</p>
+            </div>
+            
+            <div class="pillar-card glow-effect">
+                <div class="pillar-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <h3>Innovative Design</h3>
+                <p>Combining traditional craftsmanship with modern innovation.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="section-header">
+            <h2>Contact Us</h2>
+            <p class="subtitle">Get in touch with us for inquiries, custom orders, or any assistance you need</p>
+        </div>
+        
+        <div class="contact-container">
+            <div class="contact-info">
+                <h3>Get in Touch</h3>
+                <p>We're here to help you find the perfect stationery for your needs. Reach out to us through any of the methods below.</p>
+                
+                <div class="contact-methods">
+                    <div class="contact-method glow-effect">
+                        <div class="contact-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>WhatsApp</h4>
+                            <p>For quick responses and instant assistance</p>
+                            <a href="https://wa.me/27725208972" class="contact-link" target="_blank">
+                                +27 72 520 8972
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-method glow-effect">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>Email</h4>
+                            <p>For detailed inquiries and custom orders</p>
+                            <a href="mailto:annadeliwe2017@gmail.com" class="contact-link">
+                                annadeliwe2017@gmail.com
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-method glow-effect">
+                        <div class="contact-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>Response Time</h4>
+                            <p>We typically respond within 1-2 hours during business hours</p>
+                            <p style="color: var(--accent-primary); font-weight: 600; margin-top: 0.5rem;">Monday - Friday: 9am - 5pm</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="contact-form">
+                <h3>Send us a Message</h3>
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number (Optional)</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Collections -->
+    <section class="collections" id="collections">
+        <div class="section-header">
+            <h2>Find Your Perfect Medium</h2>
+            <p class="subtitle">Curated collections for every type of creator and professional</p>
+        </div>
+        
+        <div class="collections-grid">
+            <div class="collection-card glow-effect">
+                <div class="collection-image">
+                    <img src="./images/journal.jpg" alt="The Dreamer's Journal Collection">
+                </div>
+                <div class="collection-content">
+                    <h3>The Dreamer's Journal</h3>
+                    <p>Premium notebooks and journals for capturing your thoughts</p>
+                </div>
+            </div>
+            
+            <div class="collection-card glow-effect">
+                <div class="collection-image">
+                    <img src="./images/schoolcollection.jpg" alt="Back to School Collection">
+                </div>
+                <div class="collection-content">
+                    <h3>Back to School Collection</h3>
+                    <p>Where your academic success begins</p>
+                </div>
+            </div>
+            
+            <div class="collection-card glow-effect">
+                <div class="collection-image">
+                    <img src="./images/art.jpg" alt="Art Collection">
+                </div>
+                <div class="collection-content">
+                    <h3>Art Collection</h3>
+                    <p>Acrylic paints, marking pens, sketch books and more</p>
+                </div>
+            </div>
+            
+            <div class="collection-card glow-effect">
+                <div class="collection-image">
+                    <img src="./images/gifts.jpg" alt="Gifts Collection">
+                </div>
+                <div class="collection-content">
+                    <h3>The Thoughtful Gift</h3>
+                    <p>Beautiful stationery sets and gift items</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products -->
+    <section class="products" id="products">
+        <div class="section-header">
+            <h2>Premium Stationery</h2>
+            <p class="subtitle">Discover our most popular products loved by creators worldwide</p>
+        </div>
+        
+        <div class="products-grid" id="productsGrid">
+            <!-- Products will be loaded by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Bokamoso ba Moso</h4>
+                <p>The Promise of Tomorrow, Written Today. We let our services speak for themselves.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="https://wa.me/27725208972" class="whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#collections">Collections</a></li>
+                    <li><a href="#products">Products</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                    <li><a href="#services">Services</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <ul class="footer-links">
+                    <li><i class="fab fa-whatsapp" style="color: #25D366; margin-right: 8px;"></i> +27 72 520 8972</li>
+                    <li><i class="fas fa-envelope" style="color: var(--accent-primary); margin-right: 8px;"></i> annadeliwe2017@gmail.com</li>
+                    <li><i class="fas fa-clock" style="color: var(--accent-primary); margin-right: 8px;"></i> Mon-Fri: 9am-5pm</li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Stay Updated</h4>
+                <p>Subscribe to receive updates on new arrivals and exclusive offers.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Your email address" id="newsletterEmail">
+                    <button type="button" id="newsletterSubscribe">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 Bokamoso ba Moso. All rights reserved. | "We let our services speak for themselves."</p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem;">Premium stationery for those who value quality. Prices in South African Rand (ZAR).</p>
+        </div>
+    </footer>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <span id="notificationText">Product added to cart!</span>
+    </div>
+
+    <script>
+        // Product Data - Updated with Rand prices and image paths
+        const products = [
+            {
+                id: 1,
+                name: "Premium Leather Journal",
+                description: "Handcrafted leather journal with premium paper and ribbon bookmark.",
+                price: 89.99,
+                category: "journals",
+                tag: "Bestseller",
+                imagePath: "./images/journal.jpg"
+            },
+            {
+                id: 2,
+                name: "Executive Planner",
+                description: "Professional weekly planner with goal-setting sections and productivity tools.",
+                price: 64.99,
+                category: "planners",
+                tag: "New",
+                imagePath: "./images/planner.jpg"
+            },
+            {
+                id: 3,
+                name: "Fountain Pen Set",
+                description: "Premium fountain pen with interchangeable nibs and ink converter.",
+                price: 399.99,
+                category: "pens",
+                tag: "Premium",
+                imagePath: "./images/pen.jpg"
+            },
+            {
+                id: 4,
+                name: "Stationery Gift Set",
+                description: "Complete set including notebook, pen, and accessories in elegant packaging.",
+                price: 249.99,
+                category: "gifts",
+                tag: "Gift",
+                imagePath: "./images/gifts.jpg"
+            },
+            {
+                id: 5,
+                name: "Sketch Art Notebook",
+                description: "Heavyweight paper notebook perfect for sketching and watercolor.",
+                price: 149.99,
+                category: "journals",
+                tag: "Artist",
+                imagePath: "./images/sketch.jpg"
+            },
+            {
+                id: 6,
+                name: "Professional Pen Case",
+                description: "Leather pen case with slots for multiple writing instruments.",
+                price: 749.99,
+                category: "accessories",
+                tag: "Accessory",
+                imagePath: "./images/pen-case.jpg"
+            }
+        ];
+
+        // Cart Data
+        let cart = JSON.parse(localStorage.getItem('bokamosoCart')) || [];
+        let wishlist = JSON.parse(localStorage.getItem('bokamosoWishlist')) || [];
+
+        // DOM Elements
+        const navLinks = document.getElementById('navLinks');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const cartToggle = document.getElementById('cartToggle');
+        const cartSidebar = document.getElementById('cartSidebar');
+        const cartClose = document.getElementById('cartClose');
+        const cartCount = document.getElementById('cartCount');
+        const cartItems = document.getElementById('cartItems');
+        const cartEmpty = document.getElementById('cartEmpty');
+        const cartTotal = document.getElementById('cartTotal');
+        const totalAmount = document.getElementById('totalAmount');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const productsGrid = document.getElementById('productsGrid');
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+        const newsletterSubscribe = document.getElementById('newsletterSubscribe');
+        const newsletterEmail = document.getElementById('newsletterEmail');
+        const contactForm = document.getElementById('contactForm');
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProducts();
+            updateCartDisplay();
+            setupEventListeners();
+            
+            // Add animation to hero elements on load
+            setTimeout(() => {
+                document.querySelector('.hero h1').style.animation = 'fadeInUp 1s ease-out';
+                document.querySelector('.hero p').style.animation = 'fadeInUp 1s ease-out 0.2s both';
+                document.querySelector('.slogan').style.animation = 'fadeInUp 1s ease-out 0.3s both';
+                document.querySelector('.cta-buttons').style.animation = 'fadeInUp 1s ease-out 0.4s both';
+            }, 300);
+        });
+
+        // Render Products with Rand currency
+        function renderProducts() {
+            productsGrid.innerHTML = '';
+            
+            products.forEach(product => {
+                const isInWishlist = wishlist.includes(product.id);
+                
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card glow-effect';
+                productCard.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.imagePath}" alt="${product.name}">
+                        <div class="product-tag">${product.tag}</div>
+                    </div>
+                    <div class="product-content">
+                        <h3>${product.name}</h3>
+                        <p>${product.description}</p>
+                        <div class="product-price">
+                            <span class="currency">R</span>${product.price.toFixed(2)}
+                        </div>
+                        <div class="product-actions">
+                            <button class="btn-add-cart" data-id="${product.id}">
+                                <i class="fas fa-plus"></i> Add to Cart
+                            </button>
+                            <button class="btn-wishlist ${isInWishlist ? 'active' : ''}" data-id="${product.id}">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                productsGrid.appendChild(productCard);
+            });
+        }
+
+        // Update Cart Display with Rand currency
+        function updateCartDisplay() {
+            // Update cart count
+            const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCount.textContent = itemCount;
+            
+            // Update cart items in sidebar
+            if (cart.length === 0) {
+                cartEmpty.style.display = 'block';
+                cartTotal.style.display = 'none';
+                checkoutBtn.style.display = 'none';
+            } else {
+                cartEmpty.style.display = 'none';
+                cartTotal.style.display = 'flex';
+                checkoutBtn.style.display = 'block';
+                
+                // Calculate total
+                let total = 0;
+                cartItems.innerHTML = '';
+                
+                cart.forEach(item => {
+                    const product = products.find(p => p.id === item.id);
+                    if (product) {
+                        total += product.price * item.quantity;
+                        
+                        const cartItem = document.createElement('div');
+                        cartItem.className = 'cart-item';
+                        cartItem.innerHTML = `
+                            <div class="cart-item-image">
+                                <img src="${product.imagePath}" alt="${product.name}">
+                            </div>
+                            <div class="cart-item-details">
+                                <div class="cart-item-title">${product.name}</div>
+                                <div class="cart-item-price">R ${(product.price * item.quantity).toFixed(2)}</div>
+                                <div class="cart-item-actions">
+                                    <div class="cart-item-qty">
+                                        <button class="qty-btn minus" data-id="${product.id}">-</button>
+                                        <span>${item.quantity}</span>
+                                        <button class="qty-btn plus" data-id="${product.id}">+</button>
+                                    </div>
+                                    <button class="remove-item" data-id="${product.id}">Remove</button>
+                                </div>
+                            </div>
+                        `;
+                        cartItems.appendChild(cartItem);
+                    }
+                });
+                
+                totalAmount.textContent = `R ${total.toFixed(2)}`;
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('bokamosoCart', JSON.stringify(cart));
+        }
+
+        // Show Notification
+        function showNotification(message) {
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            // Mobile Menu Toggle
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+
+            // Cart Toggle
+            cartToggle.addEventListener('click', () => {
+                cartSidebar.classList.add('active');
+            });
+
+            cartClose.addEventListener('click', () => {
+                cartSidebar.classList.remove('active');
+            });
+
+            // Close cart when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!cartSidebar.contains(e.target) && !cartToggle.contains(e.target) && !e.target.classList.contains('fa-shopping-bag')) {
+                    cartSidebar.classList.remove('active');
+                }
+            });
+
+            // Close mobile menu when clicking a link
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                });
+            });
+
+            // Product Grid Event Delegation
+            productsGrid.addEventListener('click', (e) => {
+                // Add to Cart button
+                if (e.target.classList.contains('btn-add-cart') || e.target.parentElement.classList.contains('btn-add-cart')) {
+                    const button = e.target.classList.contains('btn-add-cart') ? e.target : e.target.parentElement;
+                    const productId = parseInt(button.getAttribute('data-id'));
+                    addToCart(productId);
+                }
+                
+                // Wishlist button
+                if (e.target.classList.contains('btn-wishlist') || e.target.parentElement.classList.contains('btn-wishlist')) {
+                    const button = e.target.classList.contains('btn-wishlist') ? e.target : e.target.parentElement;
+                    const productId = parseInt(button.getAttribute('data-id'));
+                    toggleWishlist(productId, button);
+                }
+            });
+
+            // Cart Event Delegation
+            cartItems.addEventListener('click', (e) => {
+                // Quantity minus
+                if (e.target.classList.contains('minus')) {
+                    const productId = parseInt(e.target.getAttribute('data-id'));
+                    updateQuantity(productId, -1);
+                }
+                
+                // Quantity plus
+                if (e.target.classList.contains('plus')) {
+                    const productId = parseInt(e.target.getAttribute('data-id'));
+                    updateQuantity(productId, 1);
+                }
+                
+                // Remove item
+                if (e.target.classList.contains('remove-item')) {
+                    const productId = parseInt(e.target.getAttribute('data-id'));
+                    removeFromCart(productId);
+                }
+            });
+
+            // Checkout Button
+            checkoutBtn.addEventListener('click', () => {
+                if (cart.length > 0) {
+                    showNotification("Checkout functionality would be implemented here!");
+                    // In a real application, this would redirect to a checkout page
+                }
+            });
+
+            // Contact Form Submission
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form data
+                const formData = new FormData(this);
+                const name = formData.get('name');
+                const email = formData.get('email');
+                
+                // In a real application, this would send the form data to a server
+                showNotification(`Thank you ${name}! Your message has been sent. We'll contact you at ${email} soon.`);
+                
+                // Reset form
+                this.reset();
+            });
+
+            // Newsletter Subscription
+            newsletterSubscribe.addEventListener('click', () => {
+                const email = newsletterEmail.value.trim();
+                
+                if (email && validateEmail(email)) {
+                    showNotification("Thank you for subscribing to our updates!");
+                    newsletterEmail.value = '';
+                    
+                    // In a real application, this would send the email to a server
+                    console.log(`New subscriber: ${email}`);
+                } else {
+                    showNotification("Please enter a valid email address.");
+                }
+            });
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Cart Functions
+        function addToCart(productId) {
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: productId,
+                    quantity: 1
+                });
+            }
+            
+            updateCartDisplay();
+            showNotification("Added to cart!");
+            
+            // Open cart sidebar
+            cartSidebar.classList.add('active');
+        }
+
+        function updateQuantity(productId, change) {
+            const item = cart.find(item => item.id === productId);
+            
+            if (item) {
+                item.quantity += change;
+                
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    updateCartDisplay();
+                }
+            }
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartDisplay();
+            showNotification("Removed from cart.");
+        }
+
+        // Wishlist Functions
+        function toggleWishlist(productId, button) {
+            const index = wishlist.indexOf(productId);
+            
+            if (index === -1) {
+                // Add to wishlist
+                wishlist.push(productId);
+                button.classList.add('active');
+                showNotification("Added to wishlist!");
+            } else {
+                // Remove from wishlist
+                wishlist.splice(index, 1);
+                button.classList.remove('active');
+                showNotification("Removed from wishlist.");
+            }
+            
+            localStorage.setItem('bokamosoWishlist', JSON.stringify(wishlist));
+        }
+
+        // Utility Functions
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Add some interactive effects
+        document.querySelectorAll('.glow-effect').forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px)';
+            });
+            
+            element.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>
