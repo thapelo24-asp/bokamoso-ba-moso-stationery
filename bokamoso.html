@@ -408,7 +408,8 @@
         }
 
         .form-group input,
-        .form-group textarea {
+        .form-group textarea,
+        .form-group select {
             width: 100%;
             padding: 0.8rem 1rem;
             background-color: rgba(255, 255, 255, 0.05);
@@ -421,7 +422,8 @@
         }
 
         .form-group input:focus,
-        .form-group textarea:focus {
+        .form-group textarea:focus,
+        .form-group select:focus {
             outline: none;
             border-color: var(--accent-primary);
             box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.1);
@@ -430,6 +432,87 @@
         .form-group textarea {
             min-height: 150px;
             resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Checkout Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--accent-primary);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            color: var(--accent-primary);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            color: var(--accent-primary);
+        }
+
+        .order-summary {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .order-summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .order-total {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--accent-primary);
         }
 
         /* Collections */
@@ -948,6 +1031,10 @@
             .products-grid {
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Notification */
@@ -1026,6 +1113,80 @@
         <button class="btn btn-primary" id="checkoutBtn" style="width: 100%; display: none;">Checkout</button>
     </div>
 
+    <!-- Checkout Modal -->
+    <div class="modal" id="checkoutModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Complete Your Order</h3>
+                <button class="close-modal" onclick="closeCheckoutModal()">&times;</button>
+            </div>
+            
+            <div id="orderSummary" class="order-summary">
+                <!-- Order summary will be inserted here -->
+            </div>
+            
+            <form id="checkoutForm">
+                <h4>Personal Information</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="checkoutName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" id="checkoutEmail" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" id="checkoutPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>ID/Passport Number</label>
+                        <input type="text" id="checkoutId">
+                    </div>
+                </div>
+                
+                <h4>Delivery Address</h4>
+                <div class="form-group">
+                    <label>Street Address *</label>
+                    <input type="text" id="checkoutAddress" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>City *</label>
+                        <input type="text" id="checkoutCity" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Postal Code</label>
+                        <input type="text" id="checkoutPostal">
+                    </div>
+                </div>
+                
+                <h4>Payment Method</h4>
+                <div class="form-group">
+                    <select id="checkoutPayment">
+                        <option value="cash">Cash on Delivery</option>
+                        <option value="card">Credit/Debit Card</option>
+                        <option value="eft">EFT</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Special Instructions (Optional)</label>
+                    <textarea id="checkoutNotes" rows="3"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-check"></i> Place Order
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-background"></div>
@@ -1091,8 +1252,8 @@
                         <div class="contact-details">
                             <h4>WhatsApp</h4>
                             <p>For quick responses and instant assistance</p>
-                            <a href="https://wa.me/27725208972" class="contact-link" target="_blank">
-                                +27 72 520 8972
+                            <a href="#" class="contact-link" id="whatsappLink" target="_blank">
+                                Loading...
                             </a>
                         </div>
                     </div>
@@ -1104,8 +1265,8 @@
                         <div class="contact-details">
                             <h4>Email</h4>
                             <p>For detailed inquiries and custom orders</p>
-                            <a href="mailto:annadeliwe2017@gmail.com" class="contact-link">
-                                annadeliwe2017@gmail.com
+                            <a href="#" class="contact-link" id="emailLink">
+                                Loading...
                             </a>
                         </div>
                     </div>
@@ -1117,7 +1278,7 @@
                         <div class="contact-details">
                             <h4>Response Time</h4>
                             <p>We typically respond within 1-2 hours during business hours</p>
-                            <p style="color: var(--accent-primary); font-weight: 600; margin-top: 0.5rem;">Monday - Friday: 9am - 5pm</p>
+                            <p style="color: var(--accent-primary); font-weight: 600; margin-top: 0.5rem;" id="businessHours">Monday - Friday: 9am - 5pm</p>
                         </div>
                     </div>
                 </div>
@@ -1230,7 +1391,7 @@
                 <div class="social-links">
                     <a href="#"><i class="fab fa-instagram"></i></a>
                     <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="https://wa.me/27725208972" class="whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#" class="whatsapp" id="footerWhatsappLink" target="_blank"><i class="fab fa-whatsapp"></i></a>
                     <a href="#"><i class="fab fa-facebook"></i></a>
                 </div>
             </div>
@@ -1248,10 +1409,10 @@
             
             <div class="footer-section">
                 <h4>Contact Info</h4>
-                <ul class="footer-links">
-                    <li><i class="fab fa-whatsapp" style="color: #25D366; margin-right: 8px;"></i> +27 72 520 8972</li>
-                    <li><i class="fas fa-envelope" style="color: var(--accent-primary); margin-right: 8px;"></i> annadeliwe2017@gmail.com</li>
-                    <li><i class="fas fa-clock" style="color: var(--accent-primary); margin-right: 8px;"></i> Mon-Fri: 9am-5pm</li>
+                <ul class="footer-links" id="contactInfoList">
+                    <li><i class="fab fa-whatsapp" style="color: #25D366; margin-right: 8px;"></i> <span id="footerWhatsapp">Loading...</span></li>
+                    <li><i class="fas fa-envelope" style="color: var(--accent-primary); margin-right: 8px;"></i> <span id="footerEmail">Loading...</span></li>
+                    <li><i class="fas fa-clock" style="color: var(--accent-primary); margin-right: 8px;"></i> <span id="footerHours">Loading...</span></li>
                 </ul>
             </div>
             
@@ -1279,13 +1440,91 @@
     </div>
 
     <script>
-        // Product Data - Updated with Rand prices and image paths
+        // Default settings (fallback if no admin settings exist)
+        const defaultSettings = {
+            whatsapp: "+27 72 520 8972",
+            whatsappLink: "https://wa.me/27725208972",
+            email: "annadeliwe2017@gmail.com",
+            hours: "Monday - Friday: 9am - 5pm",
+            storeName: "Bokamoso ba Moso",
+            tagline: "We let our services speak for themselves. Try Us!"
+        };
+
+        // Load settings from admin
+        function loadSettingsFromAdmin() {
+            const savedWhatsapp = localStorage.getItem('bokamosoWhatsapp');
+            const savedEmail = localStorage.getItem('bokamosoEmail');
+            const savedHours = localStorage.getItem('bokamosoHours');
+            const savedStoreName = localStorage.getItem('bokamosoStoreName');
+            const savedTagline = localStorage.getItem('bokamosoTagline');
+            
+            // Update WhatsApp
+            const whatsappNumber = savedWhatsapp || defaultSettings.whatsapp;
+            const whatsappClean = whatsappNumber.replace(/[^0-9]/g, '');
+            const whatsappLink = `https://wa.me/${whatsappClean}`;
+            
+            // Update all WhatsApp links and displays
+            const whatsappLinkElement = document.getElementById('whatsappLink');
+            if (whatsappLinkElement) {
+                whatsappLinkElement.href = whatsappLink;
+                whatsappLinkElement.textContent = whatsappNumber;
+            }
+            
+            const footerWhatsappLink = document.getElementById('footerWhatsappLink');
+            if (footerWhatsappLink) {
+                footerWhatsappLink.href = whatsappLink;
+            }
+            
+            const footerWhatsapp = document.getElementById('footerWhatsapp');
+            if (footerWhatsapp) {
+                footerWhatsapp.textContent = whatsappNumber;
+            }
+            
+            // Update Email
+            const emailAddress = savedEmail || defaultSettings.email;
+            const emailLink = document.getElementById('emailLink');
+            if (emailLink) {
+                emailLink.href = `mailto:${emailAddress}`;
+                emailLink.textContent = emailAddress;
+            }
+            
+            const footerEmail = document.getElementById('footerEmail');
+            if (footerEmail) {
+                footerEmail.textContent = emailAddress;
+            }
+            
+            // Update Hours
+            const businessHours = savedHours || defaultSettings.hours;
+            const hoursElement = document.getElementById('businessHours');
+            if (hoursElement) {
+                hoursElement.textContent = businessHours;
+            }
+            
+            const footerHours = document.getElementById('footerHours');
+            if (footerHours) {
+                footerHours.textContent = businessHours;
+            }
+            
+            // Update Store Name and Tagline
+            if (savedStoreName) {
+                document.querySelector('.logo').innerHTML = savedStoreName.replace(' ', '<span>baMoso</span>');
+            }
+            
+            if (savedTagline) {
+                const sloganElement = document.querySelector('.slogan');
+                if (sloganElement) {
+                    sloganElement.textContent = savedTagline;
+                }
+            }
+        }
+
+        // Product Data
         const products = [
             {
                 id: 1,
                 name: "Premium Leather Journal",
                 description: "Handcrafted leather journal with premium paper and ribbon bookmark.",
-                price: 89.99,
+                price: 899.99,
                 category: "journals",
                 tag: "Bestseller",
                 imagePath: "./images/journal.jpg"
@@ -1294,7 +1533,7 @@
                 id: 2,
                 name: "Executive Planner",
                 description: "Professional weekly planner with goal-setting sections and productivity tools.",
-                price: 64.99,
+                price: 649.99,
                 category: "planners",
                 tag: "New",
                 imagePath: "./images/planner.jpg"
@@ -1303,7 +1542,7 @@
                 id: 3,
                 name: "Fountain Pen Set",
                 description: "Premium fountain pen with interchangeable nibs and ink converter.",
-                price: 399.99,
+                price: 1299.99,
                 category: "pens",
                 tag: "Premium",
                 imagePath: "./images/pen.jpg"
@@ -1312,7 +1551,7 @@
                 id: 4,
                 name: "Stationery Gift Set",
                 description: "Complete set including notebook, pen, and accessories in elegant packaging.",
-                price: 249.99,
+                price: 1499.99,
                 category: "gifts",
                 tag: "Gift",
                 imagePath: "./images/gifts.jpg"
@@ -1321,10 +1560,10 @@
                 id: 5,
                 name: "Sketch Art Notebook",
                 description: "Heavyweight paper notebook perfect for sketching and watercolor.",
-                price: 149.99,
+                price: 549.99,
                 category: "journals",
                 tag: "Artist",
-                imagePath: "./images/sketch.jpg"
+                imagePath: "./images/art.jpg"
             },
             {
                 id: 6,
@@ -1340,6 +1579,7 @@
         // Cart Data
         let cart = JSON.parse(localStorage.getItem('bokamosoCart')) || [];
         let wishlist = JSON.parse(localStorage.getItem('bokamosoWishlist')) || [];
+        let orders = JSON.parse(localStorage.getItem('bokamosoOrders')) || [];
 
         // DOM Elements
         const navLinks = document.getElementById('navLinks');
@@ -1359,12 +1599,23 @@
         const newsletterSubscribe = document.getElementById('newsletterSubscribe');
         const newsletterEmail = document.getElementById('newsletterEmail');
         const contactForm = document.getElementById('contactForm');
+        const checkoutModal = document.getElementById('checkoutModal');
+        const checkoutForm = document.getElementById('checkoutForm');
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
+            loadSettingsFromAdmin();
+            loadProductsFromAdmin();
             renderProducts();
             updateCartDisplay();
             setupEventListeners();
+            
+            // Listen for settings changes from admin
+            window.addEventListener('storage', function(e) {
+                if (e.key && e.key.startsWith('bokamoso')) {
+                    loadSettingsFromAdmin();
+                }
+            });
             
             // Add animation to hero elements on load
             setTimeout(() => {
@@ -1375,7 +1626,24 @@
             }, 300);
         });
 
-        // Render Products with Rand currency
+        // Load products from admin
+        function loadProductsFromAdmin() {
+            const savedProducts = localStorage.getItem('bokamosoProducts');
+            if (savedProducts) {
+                try {
+                    const adminProducts = JSON.parse(savedProducts);
+                    if (adminProducts && adminProducts.length > 0) {
+                        // Clear existing products and use admin products
+                        products.length = 0;
+                        adminProducts.forEach(product => products.push(product));
+                    }
+                } catch (e) {
+                    console.error('Error loading products from admin:', e);
+                }
+            }
+        }
+
+        // Render Products
         function renderProducts() {
             productsGrid.innerHTML = '';
             
@@ -1386,7 +1654,8 @@
                 productCard.className = 'product-card glow-effect';
                 productCard.innerHTML = `
                     <div class="product-image">
-                        <img src="${product.imagePath}" alt="${product.name}">
+                        <img src="${product.imagePath}" alt="${product.name}" 
+                             onerror="this.src='./images/placeholder.jpg'; this.onerror=null;">
                         <div class="product-tag">${product.tag}</div>
                     </div>
                     <div class="product-content">
@@ -1410,13 +1679,11 @@
             });
         }
 
-        // Update Cart Display with Rand currency
+        // Update Cart Display
         function updateCartDisplay() {
-            // Update cart count
             const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
             cartCount.textContent = itemCount;
             
-            // Update cart items in sidebar
             if (cart.length === 0) {
                 cartEmpty.style.display = 'block';
                 cartTotal.style.display = 'none';
@@ -1426,7 +1693,6 @@
                 cartTotal.style.display = 'flex';
                 checkoutBtn.style.display = 'block';
                 
-                // Calculate total
                 let total = 0;
                 cartItems.innerHTML = '';
                 
@@ -1461,7 +1727,6 @@
                 totalAmount.textContent = `R ${total.toFixed(2)}`;
             }
             
-            // Save to localStorage
             localStorage.setItem('bokamosoCart', JSON.stringify(cart));
         }
 
@@ -1473,6 +1738,174 @@
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 3000);
+        }
+
+        // Checkout Modal Functions
+        function openCheckoutModal() {
+            if (cart.length === 0) {
+                showNotification("Your cart is empty!");
+                return;
+            }
+            
+            // Calculate totals
+            const subtotal = cart.reduce((total, item) => {
+                const product = products.find(p => p.id === item.id);
+                return total + (product.price * item.quantity);
+            }, 0);
+            
+            const shipping = subtotal > 500 ? 0 : 50;
+            const total = subtotal + shipping;
+            
+            // Generate order summary HTML
+            let summaryHtml = '<h4>Order Summary</h4>';
+            cart.forEach(item => {
+                const product = products.find(p => p.id === item.id);
+                summaryHtml += `
+                    <div class="order-summary-item">
+                        <span>${product.name} x${item.quantity}</span>
+                        <span>R ${(product.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                `;
+            });
+            summaryHtml += `
+                <div class="order-summary-item">
+                    <span>Subtotal</span>
+                    <span>R ${subtotal.toFixed(2)}</span>
+                </div>
+                <div class="order-summary-item">
+                    <span>Shipping</span>
+                    <span>R ${shipping.toFixed(2)}</span>
+                </div>
+                <div class="order-total">
+                    <span>Total</span>
+                    <span>R ${total.toFixed(2)}</span>
+                </div>
+            `;
+            
+            document.getElementById('orderSummary').innerHTML = summaryHtml;
+            checkoutModal.classList.add('active');
+        }
+
+        function closeCheckoutModal() {
+            checkoutModal.classList.remove('active');
+        }
+
+        // Process checkout form submission
+        checkoutForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('checkoutName').value;
+            const email = document.getElementById('checkoutEmail').value;
+            const phone = document.getElementById('checkoutPhone').value;
+            const idNumber = document.getElementById('checkoutId').value;
+            const address = document.getElementById('checkoutAddress').value;
+            const city = document.getElementById('checkoutCity').value;
+            const postal = document.getElementById('checkoutPostal').value;
+            const paymentMethod = document.getElementById('checkoutPayment').value;
+            const notes = document.getElementById('checkoutNotes').value;
+            
+            // Validate required fields
+            if (!name || !email || !phone || !address || !city) {
+                showNotification("Please fill in all required fields");
+                return;
+            }
+            
+            // Calculate totals
+            const subtotal = cart.reduce((total, item) => {
+                const product = products.find(p => p.id === item.id);
+                return total + (product.price * item.quantity);
+            }, 0);
+            
+            const shipping = subtotal > 500 ? 0 : 50;
+            const total = subtotal + shipping;
+            
+            // Create order object
+            const order = {
+                id: 'ORD-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+                customer: {
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    idNumber: idNumber
+                },
+                items: cart.map(item => {
+                    const product = products.find(p => p.id === item.id);
+                    return {
+                        id: item.id,
+                        name: product.name,
+                        quantity: item.quantity,
+                        price: product.price,
+                        subtotal: product.price * item.quantity
+                    };
+                }),
+                shipping: {
+                    address: address + ', ' + city + (postal ? ', ' + postal : ''),
+                    method: "Standard Delivery",
+                    cost: shipping
+                },
+                payment: {
+                    method: paymentMethod === 'cash' ? 'Cash on Delivery' : 
+                           paymentMethod === 'card' ? 'Credit/Debit Card' : 'EFT',
+                    status: "Pending"
+                },
+                subtotal: subtotal,
+                shippingCost: shipping,
+                total: total,
+                status: "pending",
+                date: new Date().toLocaleString(),
+                notes: notes
+            };
+            
+            // Save order
+            orders.push(order);
+            localStorage.setItem('bokamosoOrders', JSON.stringify(orders));
+            
+            // Save customer to admin
+            saveCustomerToAdmin(order.customer);
+            
+            // Clear cart
+            cart = [];
+            localStorage.setItem('bokamosoCart', JSON.stringify(cart));
+            updateCartDisplay();
+            
+            // Close modal
+            closeCheckoutModal();
+            
+            // Show success message
+            showNotification(`✅ Order placed successfully! Order ID: ${order.id}`);
+            
+            // Reset form
+            checkoutForm.reset();
+        });
+
+        // Save customer to admin
+        function saveCustomerToAdmin(customer) {
+            const customers = JSON.parse(localStorage.getItem('bokamosoCustomers')) || [];
+            
+            // Check if customer already exists
+            const existingCustomer = customers.find(c => c.email === customer.email);
+            
+            if (existingCustomer) {
+                // Update existing customer
+                existingCustomer.orders = (existingCustomer.orders || 0) + 1;
+                existingCustomer.lastOrder = new Date().toLocaleString();
+            } else {
+                // Add new customer
+                customers.push({
+                    id: Date.now(),
+                    name: customer.name,
+                    email: customer.email,
+                    phone: customer.phone,
+                    idNumber: customer.idNumber || '',
+                    orders: 1,
+                    joined: new Date().toLocaleString(),
+                    lastOrder: new Date().toLocaleString(),
+                    totalSpent: 0 // Will be updated when order is processed
+                });
+            }
+            
+            localStorage.setItem('bokamosoCustomers', JSON.stringify(customers));
         }
 
         // Setup Event Listeners
@@ -1507,14 +1940,12 @@
 
             // Product Grid Event Delegation
             productsGrid.addEventListener('click', (e) => {
-                // Add to Cart button
                 if (e.target.classList.contains('btn-add-cart') || e.target.parentElement.classList.contains('btn-add-cart')) {
                     const button = e.target.classList.contains('btn-add-cart') ? e.target : e.target.parentElement;
                     const productId = parseInt(button.getAttribute('data-id'));
                     addToCart(productId);
                 }
                 
-                // Wishlist button
                 if (e.target.classList.contains('btn-wishlist') || e.target.parentElement.classList.contains('btn-wishlist')) {
                     const button = e.target.classList.contains('btn-wishlist') ? e.target : e.target.parentElement;
                     const productId = parseInt(button.getAttribute('data-id'));
@@ -1524,46 +1955,72 @@
 
             // Cart Event Delegation
             cartItems.addEventListener('click', (e) => {
-                // Quantity minus
                 if (e.target.classList.contains('minus')) {
                     const productId = parseInt(e.target.getAttribute('data-id'));
                     updateQuantity(productId, -1);
                 }
                 
-                // Quantity plus
                 if (e.target.classList.contains('plus')) {
                     const productId = parseInt(e.target.getAttribute('data-id'));
                     updateQuantity(productId, 1);
                 }
                 
-                // Remove item
                 if (e.target.classList.contains('remove-item')) {
                     const productId = parseInt(e.target.getAttribute('data-id'));
                     removeFromCart(productId);
                 }
             });
 
-            // Checkout Button
+            // Checkout Button - Opens modal instead of processCheckout
             checkoutBtn.addEventListener('click', () => {
-                if (cart.length > 0) {
-                    showNotification("Checkout functionality would be implemented here!");
-                    // In a real application, this would redirect to a checkout page
-                }
+                openCheckoutModal();
             });
 
             // Contact Form Submission
             contactForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                // Get form data
                 const formData = new FormData(this);
                 const name = formData.get('name');
                 const email = formData.get('email');
+                const phone = formData.get('phone');
+                const subject = formData.get('subject');
+                const message = formData.get('message');
                 
-                // In a real application, this would send the form data to a server
-                showNotification(`Thank you ${name}! Your message has been sent. We'll contact you at ${email} soon.`);
+                try {
+                    const messages = JSON.parse(localStorage.getItem('bokamosoMessages')) || [];
+                    messages.push({
+                        id: Date.now(),
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        subject: subject,
+                        message: message,
+                        date: new Date().toLocaleString(),
+                        read: false
+                    });
+                    localStorage.setItem('bokamosoMessages', JSON.stringify(messages));
+                    
+                    // Save contact as potential customer
+                    const customers = JSON.parse(localStorage.getItem('bokamosoCustomers')) || [];
+                    const existingCustomer = customers.find(c => c.email === email);
+                    
+                    if (!existingCustomer) {
+                        customers.push({
+                            id: Date.now(),
+                            name: name,
+                            email: email,
+                            phone: phone,
+                            source: 'Contact Form',
+                            joined: new Date().toLocaleString()
+                        });
+                        localStorage.setItem('bokamosoCustomers', JSON.stringify(customers));
+                    }
+                } catch (error) {
+                    console.error('Error saving message:', error);
+                }
                 
-                // Reset form
+                showNotification(`Thank you ${name}! Your message has been sent.`);
                 this.reset();
             });
 
@@ -1572,11 +2029,33 @@
                 const email = newsletterEmail.value.trim();
                 
                 if (email && validateEmail(email)) {
-                    showNotification("Thank you for subscribing to our updates!");
+                    showNotification("Thank you for subscribing!");
                     newsletterEmail.value = '';
                     
-                    // In a real application, this would send the email to a server
-                    console.log(`New subscriber: ${email}`);
+                    try {
+                        const subscribers = JSON.parse(localStorage.getItem('bokamosoSubscribers')) || [];
+                        subscribers.push({
+                            email: email,
+                            date: new Date().toLocaleString()
+                        });
+                        localStorage.setItem('bokamosoSubscribers', JSON.stringify(subscribers));
+                        
+                        // Save as potential customer
+                        const customers = JSON.parse(localStorage.getItem('bokamosoCustomers')) || [];
+                        const existingCustomer = customers.find(c => c.email === email);
+                        
+                        if (!existingCustomer) {
+                            customers.push({
+                                id: Date.now(),
+                                email: email,
+                                source: 'Newsletter',
+                                joined: new Date().toLocaleString()
+                            });
+                            localStorage.setItem('bokamosoCustomers', JSON.stringify(customers));
+                        }
+                    } catch (error) {
+                        console.error('Error saving subscriber:', error);
+                    }
                 } else {
                     showNotification("Please enter a valid email address.");
                 }
@@ -1599,6 +2078,13 @@
                     }
                 });
             });
+
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === checkoutModal) {
+                    closeCheckoutModal();
+                }
+            });
         }
 
         // Cart Functions
@@ -1616,8 +2102,6 @@
             
             updateCartDisplay();
             showNotification("Added to cart!");
-            
-            // Open cart sidebar
             cartSidebar.classList.add('active');
         }
 
@@ -1646,12 +2130,10 @@
             const index = wishlist.indexOf(productId);
             
             if (index === -1) {
-                // Add to wishlist
                 wishlist.push(productId);
                 button.classList.add('active');
                 showNotification("Added to wishlist!");
             } else {
-                // Remove from wishlist
                 wishlist.splice(index, 1);
                 button.classList.remove('active');
                 showNotification("Removed from wishlist.");
@@ -1666,7 +2148,7 @@
             return re.test(email);
         }
 
-        // Add some interactive effects
+        // Interactive effects
         document.querySelectorAll('.glow-effect').forEach(element => {
             element.addEventListener('mouseenter', function() {
                 this.style.transform = 'translateY(-10px)';
@@ -1676,6 +2158,14 @@
                 this.style.transform = 'translateY(0)';
             });
         });
+
+        // Sync with admin
+        window.syncWithAdmin = function() {
+            loadSettingsFromAdmin();
+            loadProductsFromAdmin();
+            renderProducts();
+            showNotification('Settings synced with admin!');
+        };
     </script>
 </body>
 </html>
