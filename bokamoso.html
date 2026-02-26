@@ -27,7 +27,7 @@
         }
 
         html, body {
-            overflow-x: hidden; /* Prevent horizontal scroll */
+            overflow-x: hidden;
             width: 100%;
             position: relative;
         }
@@ -56,7 +56,7 @@
         }
 
         h1 { 
-            font-size: clamp(2rem, 8vw, 3.5rem); /* Responsive font size */
+            font-size: clamp(2rem, 8vw, 3.5rem);
             font-weight: 800;
         }
         h2 { 
@@ -72,7 +72,7 @@
             margin-bottom: 2rem;
             max-width: 800px;
             line-height: 1.5;
-            padding: 0 1rem; /* Add padding for mobile */
+            padding: 0 1rem;
         }
 
         .slogan {
@@ -144,7 +144,6 @@
             display: inline;
         }
 
-        /* Mobile Navigation Menu */
         .nav-links {
             display: flex;
             gap: 2rem;
@@ -224,9 +223,8 @@
             color: var(--accent-primary);
         }
 
-        /* Hero Section - Mobile First */
         .hero {
-            padding: 6rem 1rem 3rem; /* Reduced padding for mobile */
+            padding: 6rem 1rem 3rem;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -306,7 +304,6 @@
             box-shadow: 0 10px 20px rgba(255, 68, 68, 0.2);
         }
 
-        /* Value Pillars - Mobile First */
         .value-pillars {
             padding: 3rem 1rem;
             background-color: var(--secondary-bg);
@@ -342,7 +339,6 @@
             color: var(--accent-primary);
         }
 
-        /* Contact Section - Mobile First */
         .contact {
             padding: 3rem 1rem;
             background-color: var(--secondary-bg);
@@ -442,7 +438,6 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* Collections - Mobile First */
         .collections {
             padding: 3rem 1rem;
             width: 100%;
@@ -529,7 +524,6 @@
             color: var(--text-secondary);
         }
 
-        /* Products - Mobile First */
         .products {
             padding: 3rem 1rem;
             width: 100%;
@@ -675,7 +669,6 @@
             flex-shrink: 0;
         }
 
-        /* Cart Sidebar - Mobile First */
         .cart-sidebar {
             position: fixed;
             top: 0;
@@ -704,7 +697,6 @@
             box-shadow: -10px 0 50px rgba(0, 0, 0, 0.5);
         }
 
-        /* Modal - Mobile First */
         .modal {
             display: none;
             position: fixed;
@@ -748,7 +740,6 @@
             }
         }
 
-        /* Footer - Mobile First */
         .footer {
             padding: 3rem 1rem 1rem;
             background-color: var(--primary-bg);
@@ -851,7 +842,6 @@
             transition: var(--transition);
         }
 
-        /* Responsive Navigation */
         @media (max-width: 768px) {
             .nav-links {
                 position: fixed;
@@ -907,7 +897,6 @@
             }
         }
 
-        /* Animations */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -932,7 +921,6 @@
             animation: pulse 2s infinite;
         }
 
-        /* Notification */
         .notification {
             position: fixed;
             bottom: 20px;
@@ -965,13 +953,11 @@
             opacity: 1;
         }
 
-        /* Currency Symbol */
         .currency {
             font-size: 0.8em;
             margin-right: 2px;
         }
 
-        /* Utility Classes */
         .container {
             width: 100%;
             max-width: 1200px;
@@ -1359,9 +1345,6 @@
     </div>
 
     <script>
-        // Your existing JavaScript remains exactly the same
-        // Copy your complete JavaScript from your current file here
-        
         // Default settings (fallback if no admin settings exist)
         const defaultSettings = {
             whatsapp: "+27 72 520 8972",
@@ -1371,6 +1354,40 @@
             storeName: "Bokamoso ba Moso",
             tagline: "We let our services speak for themselves. Try Us!"
         };
+
+        // ============= SYNC WITH ADMIN =============
+        
+        // Load products from admin
+        function loadProductsFromAdmin() {
+            const savedProducts = localStorage.getItem('bokamosoProducts');
+            if (savedProducts) {
+                try {
+                    const adminProducts = JSON.parse(savedProducts);
+                    if (adminProducts && adminProducts.length > 0) {
+                        // Replace local products with admin products
+                        products.length = 0; // Clear existing array
+                        adminProducts.forEach(product => {
+                            // Ensure all required fields exist
+                            products.push({
+                                id: product.id,
+                                name: product.name,
+                                description: product.description || '',
+                                price: parseFloat(product.price) || 0,
+                                category: product.category || 'general',
+                                tag: product.tag || 'New',
+                                imagePath: product.imagePath || './images/placeholder.jpg',
+                                stock: product.stock || 0
+                            });
+                        });
+                        console.log('✅ Products loaded from admin:', products.length);
+                        return true;
+                    }
+                } catch (e) {
+                    console.error('Error loading products from admin:', e);
+                }
+            }
+            return false;
+        }
 
         // Load settings from admin
         function loadSettingsFromAdmin() {
@@ -1439,7 +1456,7 @@
             }
         }
 
-        // Product Data
+        // Product Data (fallback if no admin data)
         const localProducts = [
             {
                 id: 1,
@@ -1497,7 +1514,10 @@
             }
         ];
 
+        // Main products array (will be updated from admin)
         let products = [...localProducts];
+        
+        // Cart Data
         let cart = JSON.parse(localStorage.getItem('bokamosoCart')) || [];
         let wishlist = JSON.parse(localStorage.getItem('bokamosoWishlist')) || [];
         let orders = JSON.parse(localStorage.getItem('bokamosoOrders')) || [];
@@ -1525,10 +1545,63 @@
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
+            // Load settings first
             loadSettingsFromAdmin();
+            
+            // Load products from admin (this will replace local products if available)
+            loadProductsFromAdmin();
+            
+            // Render products
             renderProducts();
+            
+            // Update cart display
             updateCartDisplay();
+            
+            // Setup event listeners
             setupEventListeners();
+            
+            // Listen for storage events (when admin updates data)
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'bokamosoProducts') {
+                    console.log('📦 Products updated from admin');
+                    if (loadProductsFromAdmin()) {
+                        renderProducts();
+                        showNotification('🔄 Products updated from admin!');
+                    }
+                }
+                
+                if (e.key === 'bokamosoWhatsapp' || e.key === 'bokamosoEmail' || e.key === 'bokamosoHours') {
+                    console.log('⚙️ Settings updated from admin');
+                    loadSettingsFromAdmin();
+                    showNotification('⚙️ Contact info updated!');
+                }
+            });
+            
+            // Auto-sync every 10 seconds as backup
+            setInterval(function() {
+                const savedProducts = localStorage.getItem('bokamosoProducts');
+                if (savedProducts) {
+                    try {
+                        const adminProducts = JSON.parse(savedProducts);
+                        // Check if products have changed
+                        if (JSON.stringify(adminProducts) !== JSON.stringify(products)) {
+                            console.log('🔄 Auto-sync: Products changed');
+                            loadProductsFromAdmin();
+                            renderProducts();
+                        }
+                    } catch (e) {
+                        console.error('Error in auto-sync:', e);
+                    }
+                }
+            }, 10000); // Check every 10 seconds
+            
+            // Add animation to hero elements on load
+            setTimeout(() => {
+                document.querySelector('.hero h1').style.animation = 'fadeInUp 1s ease-out';
+                document.querySelector('.hero p').style.animation = 'fadeInUp 1s ease-out 0.2s both';
+                document.querySelector('.slogan').style.animation = 'fadeInUp 1s ease-out 0.3s both';
+                document.querySelector('.cta-buttons').style.animation = 'fadeInUp 1s ease-out 0.4s both';
+            }, 300);
         });
 
         // Render Products
@@ -1742,6 +1815,12 @@
                 const name = document.getElementById('checkoutName').value;
                 const email = document.getElementById('checkoutEmail').value;
                 const phone = document.getElementById('checkoutPhone').value;
+                const idNumber = document.getElementById('checkoutId').value;
+                const address = document.getElementById('checkoutAddress').value;
+                const city = document.getElementById('checkoutCity').value;
+                const postal = document.getElementById('checkoutPostal').value;
+                const paymentMethod = document.getElementById('checkoutPayment').value;
+                const notes = document.getElementById('checkoutNotes').value;
                 
                 const subtotal = cart.reduce((total, item) => {
                     const product = products.find(p => p.id === item.id);
@@ -1753,22 +1832,49 @@
                 
                 const order = {
                     id: 'ORD-' + Date.now(),
-                    customer: { name, email, phone },
+                    customer: { 
+                        name, 
+                        email, 
+                        phone,
+                        idNumber 
+                    },
                     items: cart.map(item => {
                         const product = products.find(p => p.id === item.id);
                         return {
+                            id: item.id,
                             name: product.name,
                             quantity: item.quantity,
                             price: product.price
                         };
                     }),
+                    shipping: {
+                        address: address + ', ' + city + (postal ? ', ' + postal : ''),
+                        cost: shipping
+                    },
+                    payment: {
+                        method: paymentMethod,
+                        status: 'Pending'
+                    },
+                    subtotal: subtotal,
+                    shippingCost: shipping,
                     total: total,
                     date: new Date().toLocaleString(),
-                    status: 'pending'
+                    status: 'pending',
+                    notes: notes
                 };
                 
                 orders.push(order);
                 localStorage.setItem('bokamosoOrders', JSON.stringify(orders));
+                
+                // Trigger storage event for admin
+                const storageEvent = new StorageEvent('storage', {
+                    key: 'bokamosoOrders',
+                    newValue: JSON.stringify(orders),
+                    oldValue: null,
+                    storageArea: localStorage,
+                    url: window.location.href
+                });
+                window.dispatchEvent(storageEvent);
                 
                 cart = [];
                 localStorage.setItem('bokamosoCart', JSON.stringify(cart));
@@ -1781,6 +1887,38 @@
 
             contactForm.addEventListener('submit', function(e) {
                 e.preventDefault();
+                
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                const subject = document.getElementById('subject').value;
+                const message = document.getElementById('message').value;
+                
+                const contactMessage = {
+                    id: Date.now(),
+                    name,
+                    email,
+                    phone,
+                    subject,
+                    message,
+                    date: new Date().toLocaleString(),
+                    read: false
+                };
+                
+                const messages = JSON.parse(localStorage.getItem('bokamosoMessages')) || [];
+                messages.push(contactMessage);
+                localStorage.setItem('bokamosoMessages', JSON.stringify(messages));
+                
+                // Trigger storage event for admin
+                const storageEvent = new StorageEvent('storage', {
+                    key: 'bokamosoMessages',
+                    newValue: JSON.stringify(messages),
+                    oldValue: null,
+                    storageArea: localStorage,
+                    url: window.location.href
+                });
+                window.dispatchEvent(storageEvent);
+                
                 showNotification('Thank you! Your message has been sent.');
                 this.reset();
             });
