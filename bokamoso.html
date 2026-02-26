@@ -1069,7 +1069,7 @@
 <body>
     <!-- Navigation -->
     <nav class="navbar">
-        <div class="logo">Bokamoso<span>baMoso</span></div>
+        <div class="logo">Bokamoso<span>ba Moso</span></div>
         
         <div class="nav-links" id="navLinks">
             <a href="#home">Home</a>
@@ -1444,7 +1444,7 @@
         const defaultSettings = {
             whatsapp: "+27 72 520 8972",
             whatsappLink: "https://wa.me/27725208972",
-            email: "annadeliwe2017@gmail.com",
+            email: "deliweannam@gmail.com",
             hours: "Monday - Friday: 9am - 5pm",
             storeName: "Bokamoso ba Moso",
             tagline: "We let our services speak for themselves. Try Us!"
@@ -1518,8 +1518,8 @@
             }
         }
 
-        // Product Data
-        const products = [
+        // Product Data (fallback if database is unavailable)
+        const localProducts = [
             {
                 id: 1,
                 name: "Premium Leather Journal",
@@ -1576,6 +1576,9 @@
             }
         ];
 
+        // Main products array (will be populated from database)
+        let products = [...localProducts];
+
         // Cart Data
         let cart = JSON.parse(localStorage.getItem('bokamosoCart')) || [];
         let wishlist = JSON.parse(localStorage.getItem('bokamosoWishlist')) || [];
@@ -1605,7 +1608,7 @@
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
             loadSettingsFromAdmin();
-            loadProductsFromAdmin();
+            loadProductsFromDatabase(); // Load from database first
             renderProducts();
             updateCartDisplay();
             setupEventListeners();
@@ -1626,16 +1629,44 @@
             }, 300);
         });
 
-        // Load products from admin
+        // Load products from database via Netlify Function
+        async function loadProductsFromDatabase() {
+            try {
+                const response = await fetch('/.netlify/functions/get-products');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch products');
+                }
+                const dbProducts = await response.json();
+                
+                if (dbProducts && dbProducts.length > 0) {
+                    // Convert database products to match your format
+                    products = dbProducts.map(p => ({
+                        id: p.id,
+                        name: p.name,
+                        description: p.description,
+                        price: parseFloat(p.price),
+                        category: p.category,
+                        tag: p.tag,
+                        imagePath: p.image_path || './images/placeholder.jpg'
+                    }));
+                    console.log('Products loaded from database:', products.length);
+                }
+            } catch (error) {
+                console.error('Error loading from database, using local products:', error);
+                // Fallback to local products
+                products = [...localProducts];
+            }
+            renderProducts();
+        }
+
+        // Load products from admin (localStorage fallback)
         function loadProductsFromAdmin() {
             const savedProducts = localStorage.getItem('bokamosoProducts');
             if (savedProducts) {
                 try {
                     const adminProducts = JSON.parse(savedProducts);
                     if (adminProducts && adminProducts.length > 0) {
-                        // Clear existing products and use admin products
-                        products.length = 0;
-                        adminProducts.forEach(product => products.push(product));
+                        products = adminProducts;
                     }
                 } catch (e) {
                     console.error('Error loading products from admin:', e);
@@ -1645,6 +1676,8 @@
 
         // Render Products
         function renderProducts() {
+            if (!productsGrid) return;
+            
             productsGrid.innerHTML = '';
             
             products.forEach(product => {
@@ -1656,13 +1689,13 @@
                     <div class="product-image">
                         <img src="${product.imagePath}" alt="${product.name}" 
                              onerror="this.src='./images/placeholder.jpg'; this.onerror=null;">
-                        <div class="product-tag">${product.tag}</div>
+                        <div class="product-tag">${product.tag || 'New'}</div>
                     </div>
                     <div class="product-content">
                         <h3>${product.name}</h3>
                         <p>${product.description}</p>
                         <div class="product-price">
-                            <span class="currency">R</span>${product.price.toFixed(2)}
+                            <span class="currency">R</span>${parseFloat(product.price).toFixed(2)}
                         </div>
                         <div class="product-actions">
                             <button class="btn-add-cart" data-id="${product.id}">
@@ -1790,8 +1823,46 @@
             checkoutModal.classList.remove('active');
         }
 
+        // Process checkout form submission - Save to Database
+        async function saveOrderToDatabase(orderData) {
+            try {
+                const response = await fetch('/.netlify/functions/place-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showNotification(`✅ Order placed successfully! Order ID: ${result.orderId}`);
+                    
+                    // Clear cart
+                    cart = [];
+                    localStorage.setItem('bokamosoCart', JSON.stringify(cart));
+                    updateCartDisplay();
+                    
+                    // Close modal
+                    closeCheckoutModal();
+                    
+                    // Reset form
+                    checkoutForm.reset();
+                    
+                    return true;
+                } else {
+                    throw new Error(result.error || 'Failed to place order');
+                }
+            } catch (error) {
+                console.error('Error placing order:', error);
+                showNotification('Error placing order. Please try again.');
+                return false;
+            }
+        }
+
         // Process checkout form submission
-        checkoutForm.addEventListener('submit', function(e) {
+        checkoutForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             // Get form values
@@ -1853,33 +1924,24 @@
                 shippingCost: shipping,
                 total: total,
                 status: "pending",
-                date: new Date().toLocaleString(),
+                date: new Date().toISOString(),
                 notes: notes
             };
             
-            // Save order
-            orders.push(order);
-            localStorage.setItem('bokamosoOrders', JSON.stringify(orders));
+            // Save to database
+            const success = await saveOrderToDatabase(order);
             
-            // Save customer to admin
-            saveCustomerToAdmin(order.customer);
-            
-            // Clear cart
-            cart = [];
-            localStorage.setItem('bokamosoCart', JSON.stringify(cart));
-            updateCartDisplay();
-            
-            // Close modal
-            closeCheckoutModal();
-            
-            // Show success message
-            showNotification(`✅ Order placed successfully! Order ID: ${order.id}`);
-            
-            // Reset form
-            checkoutForm.reset();
+            if (success) {
+                // Also save to localStorage as backup
+                orders.push(order);
+                localStorage.setItem('bokamosoOrders', JSON.stringify(orders));
+                
+                // Save customer to admin (localStorage backup)
+                saveCustomerToAdmin(order.customer);
+            }
         });
 
-        // Save customer to admin
+        // Save customer to admin (localStorage backup)
         function saveCustomerToAdmin(customer) {
             const customers = JSON.parse(localStorage.getItem('bokamosoCustomers')) || [];
             
@@ -1901,11 +1963,30 @@
                     orders: 1,
                     joined: new Date().toLocaleString(),
                     lastOrder: new Date().toLocaleString(),
-                    totalSpent: 0 // Will be updated when order is processed
+                    totalSpent: 0
                 });
             }
             
             localStorage.setItem('bokamosoCustomers', JSON.stringify(customers));
+        }
+
+        // Save message to database
+        async function saveMessageToDatabase(messageData) {
+            try {
+                const response = await fetch('/.netlify/functions/save-message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(messageData)
+                });
+                
+                if (!response.ok) {
+                    console.error('Failed to save message to database');
+                }
+            } catch (error) {
+                console.error('Error saving message:', error);
+            }
         }
 
         // Setup Event Listeners
@@ -1971,13 +2052,13 @@
                 }
             });
 
-            // Checkout Button - Opens modal instead of processCheckout
+            // Checkout Button - Opens modal
             checkoutBtn.addEventListener('click', () => {
                 openCheckoutModal();
             });
 
             // Contact Form Submission
-            contactForm.addEventListener('submit', function(e) {
+            contactForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
                 const formData = new FormData(this);
@@ -1987,19 +2068,25 @@
                 const subject = formData.get('subject');
                 const message = formData.get('message');
                 
+                const messageData = {
+                    id: Date.now(),
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    subject: subject,
+                    message: message,
+                    date: new Date().toISOString(),
+                    read: false
+                };
+                
                 try {
+                    // Save to localStorage (backup)
                     const messages = JSON.parse(localStorage.getItem('bokamosoMessages')) || [];
-                    messages.push({
-                        id: Date.now(),
-                        name: name,
-                        email: email,
-                        phone: phone,
-                        subject: subject,
-                        message: message,
-                        date: new Date().toLocaleString(),
-                        read: false
-                    });
+                    messages.push(messageData);
                     localStorage.setItem('bokamosoMessages', JSON.stringify(messages));
+                    
+                    // Save to database
+                    await saveMessageToDatabase(messageData);
                     
                     // Save contact as potential customer
                     const customers = JSON.parse(localStorage.getItem('bokamosoCustomers')) || [];
