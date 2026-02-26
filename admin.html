@@ -2226,6 +2226,212 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadFromLocalStorage();
         });
-    </script>
+        // ============= SYNC WITH MAIN WEBSITE =============
+
+// Function to receive orders from main website
+window.addOrder = function(orderData) {
+    console.log('New order received from main site:', orderData);
+    
+    // Add to orders array
+    orders.push(orderData);
+    
+    // Save to localStorage
+    localStorage.setItem('bokamosoOrders', JSON.stringify(orders));
+    
+    // Update customer data
+    if (orderData.customer) {
+        updateCustomerFromOrder(orderData.customer, orderData.total);
+    }
+    
+    // Update UI if dashboard is active
+    if (document.getElementById('dashboard').classList.contains('active')) {
+        loadOrdersTable();
+        updateStats();
+    }
+    
+    // Show notification
+    showNotification('🆕 New order received!');
+    
+    // Play notification sound (optional)
+    try {
+        const audio = new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoAAACAgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f38=');
+        audio.play();
+    } catch (e) {
+        console.log('Audio notification not supported');
+    }
+};
+
+// Function to update customer data from order
+function updateCustomerFromOrder(customerData, orderTotal) {
+    const customers = JSON.parse(localStorage.getItem('bokamosoCustomers')) || [];
+    
+    // Check if customer exists
+    const existingCustomer = customers.find(c => c.email === customerData.email);
+    
+    if (existingCustomer) {
+        // Update existing customer
+        existingCustomer.orders = (existingCustomer.orders || 0) + 1;
+        existingCustomer.totalSpent = (existingCustomer.totalSpent || 0) + (orderTotal || 0);
+        existingCustomer.lastOrder = new Date().toLocaleString();
+    } else {
+        // Add new customer
+        customers.push({
+            id: Date.now(),
+            name: customerData.name || '',
+            email: customerData.email || '',
+            phone: customerData.phone || '',
+            idNumber: customerData.idNumber || '',
+            orders: 1,
+            totalSpent: orderTotal || 0,
+            joined: new Date().toLocaleString(),
+            lastOrder: new Date().toLocaleString()
+        });
+    }
+    
+    localStorage.setItem('bokamosoCustomers', JSON.stringify(customers));
+}
+
+// Listen for storage events (when main website updates localStorage)
+window.addEventListener('storage', function(e) {
+    console.log('Storage changed:', e.key, e.newValue);
+    
+    if (e.key === 'bokamosoOrders') {
+        try {
+            const newOrders = JSON.parse(e.newValue || '[]');
+            if (newOrders.length > orders.length) {
+                // New order added
+                orders = newOrders;
+                if (document.getElementById('dashboard').classList.contains('active')) {
+                    loadOrdersTable();
+                    updateStats();
+                    showNotification('🔄 Orders updated!');
+                }
+            }
+        } catch (error) {
+            console.error('Error parsing orders:', error);
+        }
+    }
+    
+    if (e.key === 'bokamosoMessages') {
+        try {
+            messages = JSON.parse(e.newValue || '[]');
+            if (document.getElementById('dashboard').classList.contains('active')) {
+                loadMessagesTable();
+                updateStats();
+            }
+        } catch (error) {
+            console.error('Error parsing messages:', error);
+        }
+    }
+    
+    if (e.key === 'bokamosoProducts') {
+        try {
+            products = JSON.parse(e.newValue || '[]');
+            if (document.getElementById('dashboard').classList.contains('active')) {
+                loadProductsTable();
+                updateStats();
+            }
+        } catch (error) {
+            console.error('Error parsing products:', error);
+        }
+    }
+});
+
+// Override the loadFromLocalStorage function to ensure orders are loaded
+const originalLoadFromLocalStorage = loadFromLocalStorage;
+loadFromLocalStorage = function() {
+    // Call original function
+    originalLoadFromLocalStorage();
+    
+    // Double-check orders from localStorage
+    const savedOrders = localStorage.getItem('bokamosoOrders');
+    if (savedOrders) {
+        orders = JSON.parse(savedOrders);
+        console.log('Orders loaded from localStorage:', orders.length);
+    }
+    
+    const savedMessages = localStorage.getItem('bokamosoMessages');
+    if (savedMessages) {
+        messages = JSON.parse(savedMessages);
+    }
+    
+    const savedCustomers = localStorage.getItem('bokamosoCustomers');
+    if (savedCustomers) {
+        customers = JSON.parse(savedCustomers);
+    }
+    
+    // Update UI
+    loadOrdersTable();
+    loadMessagesTable();
+    loadCustomersTable();
+    updateStats();
+};
+
+// Force a refresh of data every 30 seconds
+setInterval(function() {
+    if (document.getElementById('dashboard').classList.contains('active')) {
+        console.log('Auto-refreshing data...');
+        
+        const savedOrders = localStorage.getItem('bokamosoOrders');
+        if (savedOrders) {
+            const newOrders = JSON.parse(savedOrders);
+            if (JSON.stringify(newOrders) !== JSON.stringify(orders)) {
+                orders = newOrders;
+                loadOrdersTable();
+                showNotification('📊 Data refreshed');
+            }
+        }
+        
+        const savedMessages = localStorage.getItem('bokamosoMessages');
+        if (savedMessages) {
+            const newMessages = JSON.parse(savedMessages);
+            if (JSON.stringify(newMessages) !== JSON.stringify(messages)) {
+                messages = newMessages;
+                loadMessagesTable();
+            }
+        }
+        
+        updateStats();
+    }
+}, 30000); // Check every 30 seconds
+
+// Add manual refresh button to orders section
+function addRefreshButton() {
+    const ordersHeader = document.querySelector('#ordersSection .section-header');
+    if (ordersHeader && !document.getElementById('refreshOrdersBtn')) {
+        const refreshBtn = document.createElement('button');
+        refreshBtn.id = 'refreshOrdersBtn';
+        refreshBtn.className = 'add-btn';
+        refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+        refreshBtn.onclick = function() {
+            const savedOrders = localStorage.getItem('bokamosoOrders');
+            if (savedOrders) {
+                orders = JSON.parse(savedOrders);
+                loadOrdersTable();
+                showNotification('Orders refreshed!');
+            }
+        };
+        refreshBtn.style.marginLeft = '0.5rem';
+        ordersHeader.appendChild(refreshBtn);
+    }
+}
+
+// Call this after login
+document.addEventListener('DOMContentLoaded', function() {
+    // Add refresh button after a short delay
+    setTimeout(addRefreshButton, 1000);
+});
+
+// Also add refresh button when showing orders section
+const originalShowSection = showSection;
+showSection = function(section) {
+    originalShowSection(section);
+    
+    if (section === 'orders') {
+        // Add refresh button if not exists
+        setTimeout(addRefreshButton, 500);
+    }
+};
+</script>
 </body>
 </html>
