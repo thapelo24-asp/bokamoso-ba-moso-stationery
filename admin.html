@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Bokamoso ba Moso | Admin Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Futuristic CSS with Red & White Theme - Mobile First */
         * {
             margin: 0;
             padding: 0;
@@ -26,67 +27,106 @@
             --success-green: #00c851;
             --warning-yellow: #ffbb33;
             --danger-red: #ff4444;
+            --accent-glow: rgba(255, 68, 68, 0.3);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+            min-height: 100vh;
         }
 
         body {
             background-color: var(--darker-bg);
             color: var(--text-light);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 51, 51, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 102, 102, 0.05) 0%, transparent 20%);
         }
 
-        /* Login Page */
+        /* Glowing Effect */
+        .glow-effect {
+            position: relative;
+        }
+
+        .glow-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: inherit;
+            box-shadow: 0 0 20px var(--accent-glow);
+            opacity: 0;
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        .glow-effect:hover::after {
+            opacity: 1;
+        }
+
+        /* Login Page - Mobile First */
         .login-container {
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+            padding: 1rem;
         }
 
         .login-box {
             background: var(--card-bg);
-            padding: 3rem;
+            padding: 2rem 1.5rem;
             border-radius: 20px;
             width: 100%;
             max-width: 400px;
             box-shadow: 0 10px 40px rgba(255, 51, 51, 0.2);
             border: 1px solid rgba(255, 51, 51, 0.3);
+            backdrop-filter: blur(10px);
         }
 
         .login-box h2 {
             color: var(--primary-red);
             text-align: center;
-            margin-bottom: 2rem;
-            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            font-size: clamp(1.8rem, 6vw, 2rem);
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .login-box .subtitle {
             text-align: center;
             color: var(--text-gray);
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             font-size: 0.9rem;
         }
 
         .login-input {
             width: 100%;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1rem;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-color);
             border-radius: 10px;
             color: var(--text-light);
             font-size: 1rem;
-            transition: all 0.3s;
+            transition: var(--transition);
         }
 
         .login-input:focus {
             outline: none;
             border-color: var(--primary-red);
-            box-shadow: 0 0 10px rgba(255, 51, 51, 0.3);
+            box-shadow: 0 0 20px rgba(255, 51, 51, 0.3);
         }
 
         .login-btn {
             width: 100%;
-            padding: 1rem;
+            padding: 0.8rem 1rem;
             background: linear-gradient(90deg, var(--primary-red), var(--light-red));
             color: white;
             border: none;
@@ -94,7 +134,7 @@
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: var(--transition);
         }
 
         .login-btn:hover {
@@ -112,56 +152,77 @@
             display: block;
         }
 
-        /* Sidebar */
+        /* Sidebar - Mobile First */
         .sidebar {
             position: fixed;
-            left: 0;
+            left: -100%;
             top: 0;
-            width: 260px;
+            width: 85%;
+            max-width: 280px;
             height: 100vh;
             background: var(--card-bg);
-            padding: 2rem 1rem;
+            padding: 1.5rem 1rem;
             border-right: 1px solid rgba(255, 51, 51, 0.2);
             overflow-y: auto;
-            z-index: 100;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            transition: left 0.3s ease;
+        }
+
+        .sidebar.active {
+            left: 0;
+            box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        @media (min-width: 769px) {
+            .sidebar {
+                left: 0;
+                width: 260px;
+            }
         }
 
         .sidebar-logo {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: var(--primary-red);
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid rgba(255, 51, 51, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .sidebar-logo span {
             color: var(--text-light);
             display: block;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             margin-top: 0.3rem;
+            letter-spacing: 1px;
         }
 
         .nav-item {
             display: flex;
             align-items: center;
-            padding: 1rem;
-            margin: 0.5rem 0;
+            padding: 0.8rem;
+            margin: 0.3rem 0;
             border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: var(--transition);
             color: var(--text-gray);
+            border-left: 3px solid transparent;
+            font-size: 0.95rem;
         }
 
         .nav-item i {
             width: 30px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
 
         .nav-item:hover {
             background: rgba(255, 51, 51, 0.1);
             color: var(--primary-red);
+            border-left-color: var(--primary-red);
         }
 
         .nav-item.active {
@@ -170,75 +231,171 @@
             border-left: 3px solid var(--primary-red);
         }
 
-        /* Main Content */
-        .main-content {
-            margin-left: 260px;
-            padding: 2rem;
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-red), var(--light-red));
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 20px rgba(255, 51, 51, 0.4);
+            z-index: 1001;
+            transition: var(--transition);
         }
 
-        /* Top Bar */
+        .menu-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        @media (min-width: 769px) {
+            .menu-toggle {
+                display: none;
+            }
+        }
+
+        /* Overlay for mobile sidebar */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+            backdrop-filter: blur(3px);
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* Main Content - Mobile First */
+        .main-content {
+            padding: 1rem;
+            margin-left: 0;
+            transition: margin-left 0.3s ease;
+        }
+
+        @media (min-width: 769px) {
+            .main-content {
+                margin-left: 260px;
+                padding: 2rem;
+            }
+        }
+
+        /* Top Bar - Mobile First */
         .top-bar {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
             padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid rgba(255, 51, 51, 0.2);
+        }
+
+        @media (min-width: 480px) {
+            .top-bar {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
         }
 
         .page-title {
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 5vw, 2rem);
             background: linear-gradient(90deg, var(--primary-red), var(--light-red));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .admin-info {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.8rem;
+            flex-wrap: wrap;
         }
 
         .admin-avatar {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             background: linear-gradient(135deg, var(--primary-red), var(--light-red));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
+            font-size: 0.9rem;
         }
 
         .logout-btn {
-            padding: 0.5rem 1rem;
+            padding: 0.4rem 0.8rem;
             background: rgba(255, 68, 68, 0.1);
             border: 1px solid var(--danger-red);
             color: var(--danger-red);
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: var(--transition);
+            font-size: 0.9rem;
         }
 
         .logout-btn:hover {
             background: var(--danger-red);
             color: white;
+            transform: translateY(-2px);
         }
 
-        /* Stats Cards */
+        /* Stats Cards - Mobile First */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (min-width: 480px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
         }
 
         .stat-card {
             background: var(--card-bg);
-            padding: 1.5rem;
+            padding: 1.2rem;
             border-radius: 15px;
             border: 1px solid var(--border-color);
-            transition: all 0.3s;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-red), var(--light-red));
+            transform: scaleX(0);
+            transition: var(--transition);
         }
 
         .stat-card:hover {
@@ -247,14 +404,18 @@
             box-shadow: 0 5px 20px rgba(255, 51, 51, 0.2);
         }
 
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
         .stat-title {
             color: var(--text-gray);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin-bottom: 0.5rem;
         }
 
         .stat-value {
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 4vw, 2rem);
             font-weight: 700;
             color: var(--primary-red);
         }
@@ -264,7 +425,7 @@
             align-items: center;
             gap: 0.3rem;
             margin-top: 0.5rem;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         .positive {
@@ -275,29 +436,44 @@
             color: var(--danger-red);
         }
 
-        /* Tables */
+        /* Tables - Mobile First */
         .section-header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 2rem 0 1rem;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin: 1.5rem 0 1rem;
+        }
+
+        @media (min-width: 480px) {
+            .section-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
         }
 
         .section-header h2 {
             color: var(--text-light);
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .add-btn {
-            padding: 0.7rem 1.5rem;
+            padding: 0.6rem 1.2rem;
             background: linear-gradient(90deg, var(--primary-red), var(--light-red));
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
+            transition: var(--transition);
+            display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            width: fit-content;
         }
 
         .add-btn:hover {
@@ -305,11 +481,27 @@
             box-shadow: 0 5px 15px rgba(255, 51, 51, 0.3);
         }
 
+        /* Horizontal Scroll for Tables on Mobile */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 1rem;
+            border-radius: 15px;
+        }
+
         .data-table {
             background: var(--card-bg);
             border-radius: 15px;
-            overflow: hidden;
             border: 1px solid var(--border-color);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            min-width: 800px; /* Forces horizontal scroll on mobile */
+        }
+
+        @media (min-width: 1024px) {
+            .data-table {
+                min-width: 100%;
+            }
         }
 
         table {
@@ -319,29 +511,48 @@
 
         th {
             background: rgba(255, 51, 51, 0.1);
-            padding: 1rem;
+            padding: 0.8rem;
             text-align: left;
             font-weight: 600;
             color: var(--primary-red);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            white-space: nowrap;
         }
 
         td {
-            padding: 1rem;
+            padding: 0.8rem;
             border-bottom: 1px solid var(--border-color);
             color: var(--text-gray);
+            font-size: 0.9rem;
+            white-space: nowrap;
         }
 
         tr:hover td {
             background: rgba(255, 255, 255, 0.02);
         }
 
+        /* Action Buttons - Mobile Friendly */
         .action-btn {
-            padding: 0.4rem 0.8rem;
-            margin: 0 0.2rem;
+            padding: 0.4rem 0.6rem;
+            margin: 0.1rem;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: var(--transition);
+            font-size: 0.8rem;
+        }
+
+        @media (min-width: 768px) {
+            .action-btn {
+                padding: 0.4rem 0.8rem;
+                margin: 0 0.2rem;
+            }
+        }
+
+        .action-btn i {
+            font-size: 0.9rem;
         }
 
         .edit-btn {
@@ -353,6 +564,7 @@
         .edit-btn:hover {
             background: var(--warning-yellow);
             color: var(--dark-bg);
+            transform: translateY(-2px);
         }
 
         .delete-btn {
@@ -364,6 +576,7 @@
         .delete-btn:hover {
             background: var(--danger-red);
             color: white;
+            transform: translateY(-2px);
         }
 
         .view-btn {
@@ -375,109 +588,42 @@
         .view-btn:hover {
             background: var(--success-green);
             color: white;
+            transform: translateY(-2px);
         }
 
-        /* Forms */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
+        .invoice-btn {
+            background: rgba(157, 78, 221, 0.1);
+            color: #9d4edd;
+            border: 1px solid #9d4edd;
         }
 
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            border: 1px solid var(--primary-red);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-header h3 {
-            color: var(--primary-red);
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            color: var(--text-gray);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-gray);
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.8rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-light);
-            font-size: 1rem;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary-red);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .save-btn {
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(90deg, var(--primary-red), var(--light-red));
+        .invoice-btn:hover {
+            background: #9d4edd;
             color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
+            transform: translateY(-2px);
         }
 
-        /* Orders Status */
+        .whatsapp-btn {
+            background: rgba(37, 211, 102, 0.1);
+            color: #25D366;
+            border: 1px solid #25D366;
+        }
+
+        .whatsapp-btn:hover {
+            background: #25D366;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Status Badges */
         .status-badge {
-            padding: 0.3rem 0.8rem;
+            padding: 0.2rem 0.6rem;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
         }
 
         .status-pending {
@@ -510,198 +656,358 @@
             border: 1px solid #dc3545;
         }
 
-        /* Analytics */
-        .analytics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .analytics-card {
-            background: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 15px;
-            border: 1px solid var(--border-color);
-        }
-
-        .analytics-card h3 {
-            margin-bottom: 1rem;
-            color: var(--primary-red);
-        }
-
-        .chart-placeholder {
-            height: 200px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 10px;
-            display: flex;
+        /* Modal - Mobile First */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
             align-items: center;
             justify-content: center;
-            color: var(--text-gray);
-            border: 1px dashed var(--border-color);
-        }
-
-        /* Messages */
-        .message-item {
-            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(5px);
             padding: 1rem;
-            margin-bottom: 0.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            border: 1px solid var(--border-color);
         }
 
-        .message-item:hover {
-            border-color: var(--primary-red);
+        .modal.active {
+            display: flex;
         }
 
-        .message-header {
+        .modal-content {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--primary-red);
+            box-shadow: 0 0 30px rgba(255, 51, 51, 0.3);
+        }
+
+        .modal-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 0.5rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
         }
 
-        .message-sender {
-            font-weight: 600;
+        .modal-header h3 {
             color: var(--primary-red);
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .message-date {
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-gray);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 0.5rem;
+        }
+
+        .close-modal:hover {
+            color: var(--primary-red);
+            transform: scale(1.1);
+        }
+
+        /* Form Styles - Mobile First */
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.3rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.7rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 15px rgba(255, 51, 51, 0.3);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.8rem;
+        }
+
+        @media (min-width: 480px) {
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(90deg, var(--primary-red), var(--light-red));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 51, 51, 0.4);
+        }
+
+        /* Invoice Styles - Mobile First */
+        .invoice {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 15px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border: 1px solid rgba(255, 51, 51, 0.3);
+            position: relative;
+            overflow: hidden;
+            font-size: 0.9rem;
+        }
+
+        .invoice::before {
+            content: 'INVOICE';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 2rem;
+            font-weight: 700;
+            color: rgba(255, 51, 51, 0.1);
+            transform: rotate(15deg);
+            z-index: 0;
+        }
+
+        @media (min-width: 480px) {
+            .invoice {
+                padding: 1.5rem;
+                font-size: 1rem;
+            }
+            
+            .invoice::before {
+                font-size: 3rem;
+            }
+        }
+
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .invoice-header h2 {
+            color: var(--primary-red);
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            margin-bottom: 0.3rem;
+        }
+
+        .invoice-header p {
             color: var(--text-gray);
             font-size: 0.8rem;
         }
 
-        .message-preview {
-            color: var(--text-gray);
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .invoice-details {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 0.8rem;
+            margin: 0.8rem 0;
+            position: relative;
+            z-index: 1;
         }
 
-        /* Settings */
+        .invoice-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+
+        .invoice-total {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-red);
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 2px solid var(--primary-red);
+        }
+
+        /* Settings Tabs - Mobile First */
         .settings-tabs {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 1rem;
+            padding-bottom: 0.8rem;
         }
 
         .settings-tab {
-            padding: 0.5rem 1rem;
+            padding: 0.4rem 0.8rem;
             cursor: pointer;
             color: var(--text-gray);
             border-radius: 5px;
+            transition: var(--transition);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            white-space: nowrap;
         }
 
-        .settings-tab.active {
+        @media (min-width: 480px) {
+            .settings-tab {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        .settings-tab:hover {
             background: rgba(255, 51, 51, 0.1);
             color: var(--primary-red);
         }
 
+        .settings-tab.active {
+            background: rgba(255, 51, 51, 0.2);
+            color: var(--primary-red);
+            border-bottom: 2px solid var(--primary-red);
+        }
+
         .settings-panel {
             background: var(--card-bg);
-            padding: 2rem;
+            padding: 1.2rem;
             border-radius: 15px;
             border: 1px solid var(--border-color);
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s;
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
+        @media (min-width: 480px) {
+            .settings-panel {
+                padding: 2rem;
             }
         }
-        /* Order Management Enhancements */
-.status-select {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    padding: 0.3rem;
-    border-radius: 5px;
-    border: 1px solid var(--border-color);
-    cursor: pointer;
-}
 
-.status-select option {
-    background: var(--dark-bg);
-    color: white;
-}
+        /* Notification - Mobile First */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: linear-gradient(90deg, var(--primary-red), var(--light-red));
+            color: white;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid white;
+            font-size: 0.9rem;
+            text-align: center;
+        }
 
-.status-badge.status-pending {
-    background: rgba(255, 187, 51, 0.1);
-    color: #ffbb33;
-    border: 1px solid #ffbb33;
-}
+        @media (min-width: 480px) {
+            .notification {
+                left: auto;
+                right: 20px;
+                min-width: 300px;
+                text-align: left;
+            }
+        }
 
-.status-badge.status-processing {
-    background: rgba(0, 200, 81, 0.1);
-    color: #00c851;
-    border: 1px solid #00c851;
-}
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
 
-.status-badge.status-shipped {
-    background: rgba(0, 123, 255, 0.1);
-    color: #007bff;
-    border: 1px solid #007bff;
-}
+        /* Analytics Grid - Mobile First */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
 
-.status-badge.status-delivered {
-    background: rgba(40, 167, 69, 0.1);
-    color: #28a745;
-    border: 1px solid #28a745;
-}
+        @media (min-width: 768px) {
+            .analytics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
 
-.status-badge.status-cancelled {
-    background: rgba(220, 53, 69, 0.1);
-    color: #dc3545;
-    border: 1px solid #dc3545;
-}
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
 
-/* Print styles */
-@media print {
-    .sidebar, .top-bar, .nav-item, .add-btn, .action-btn {
-        display: none !important;
-    }
-    
-    .main-content {
-        margin: 0;
-        padding: 20px;
-    }
-    
-    table {
-        border: 1px solid #000;
-    }
-}
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+
+        .mt-4 {
+            margin-top: 1rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .p-2 {
+            padding: 0.5rem;
+        }
+
+        .p-4 {
+            padding: 1rem;
+        }
     </style>
 </head>
 <body>
     <!-- Login Page -->
     <div class="login-container" id="loginPage">
-        <div class="login-box">
+        <div class="login-box glow-effect">
             <h2>Bokamoso ba Moso</h2>
             <div class="subtitle">Admin Dashboard Login</div>
             <input type="text" class="login-input" id="username" placeholder="Username" value="admin">
             <input type="password" class="login-input" id="password" placeholder="Password" value="bokamoso2024">
             <button class="login-btn" onclick="login()">Login to Dashboard</button>
-            <div style="text-align: center; margin-top: 1rem; color: var(--text-gray); font-size: 0.8rem;">
+            <div class="text-center mt-4" style="color: var(--text-gray); font-size: 0.8rem;">
                 Default: admin / bokamoso2024
             </div>
         </div>
@@ -709,6 +1015,14 @@
 
     <!-- Main Dashboard -->
     <div class="dashboard-container" id="dashboard">
+        <!-- Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-logo">
@@ -726,7 +1040,7 @@
             </div>
             <div class="nav-item" onclick="showSection('messages')">
                 <i class="fas fa-envelope"></i> Messages
-                <span style="margin-left: auto; background: var(--primary-red); padding: 0.2rem 0.5rem; border-radius: 10px; font-size: 0.8rem;" id="messageCount">0</span>
+                <span style="margin-left: auto; background: var(--primary-red); padding: 0.2rem 0.5rem; border-radius: 10px; font-size: 0.7rem;" id="messageCount">0</span>
             </div>
             <div class="nav-item" onclick="showSection('analytics')">
                 <i class="fas fa-chart-line"></i> Analytics
@@ -753,36 +1067,31 @@
                 </div>
             </div>
 
-            <!-- Mobile Menu Toggle -->
-            <button class="add-btn" style="margin-bottom: 1rem; display: none;" id="menuToggle" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i> Menu
-            </button>
-
             <!-- Overview Section -->
             <div id="overviewSection" class="content-section">
                 <div class="stats-grid">
-                    <div class="stat-card">
+                    <div class="stat-card glow-effect">
                         <div class="stat-title">Total Products</div>
                         <div class="stat-value" id="totalProducts">6</div>
                         <div class="stat-change positive">
                             <i class="fas fa-arrow-up"></i> +2 this month
                         </div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card glow-effect">
                         <div class="stat-title">Total Orders</div>
                         <div class="stat-value" id="totalOrders">0</div>
                         <div class="stat-change">
                             <i class="fas fa-minus"></i> No orders yet
                         </div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card glow-effect">
                         <div class="stat-title">Total Revenue</div>
                         <div class="stat-value" id="totalRevenue">R 0</div>
                         <div class="stat-change">
                             <i class="fas fa-minus"></i> This month
                         </div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card glow-effect">
                         <div class="stat-title">Messages</div>
                         <div class="stat-value" id="totalMessages">0</div>
                         <div class="stat-change">
@@ -798,23 +1107,25 @@
                         <i class="fas fa-eye"></i> View All
                     </button>
                 </div>
-                <div class="data-table">
-                    <table id="recentOrdersTable">
-                        <thead>
-                            <tr>
-                                <th>Order ID</th>
-                                <th>Customer</th>
-                                <th>Date</th>
-                                <th>Total</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="5" style="text-align: center;">No orders yet</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="table-container">
+                    <div class="data-table">
+                        <table id="recentOrdersTable">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="5" class="text-center">No orders yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- Recent Messages -->
@@ -824,22 +1135,24 @@
                         <i class="fas fa-eye"></i> View All
                     </button>
                 </div>
-                <div class="data-table" id="recentMessages">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>From</th>
-                                <th>Subject</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="4" style="text-align: center;">No messages yet</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="table-container">
+                    <div class="data-table" id="recentMessages">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>From</th>
+                                    <th>Subject</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="4" class="text-center">No messages yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -852,23 +1165,25 @@
                     </button>
                 </div>
                 
-                <div class="data-table">
-                    <table id="productsTable">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Image</th>
-                                <th>Name</th>
-                                <th>Price (R)</th>
-                                <th>Category</th>
-                                <th>Tag</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="productsTableBody">
-                            <!-- Products will be loaded here -->
-                        </tbody>
-                    </table>
+                <div class="table-container">
+                    <div class="data-table">
+                        <table id="productsTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Image</th>
+                                    <th>Name</th>
+                                    <th>Price (R)</th>
+                                    <th>Category</th>
+                                    <th>Tag</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTableBody">
+                                <!-- Products will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -878,25 +1193,28 @@
                     <h2>Order Management</h2>
                 </div>
                 
-                <div class="data-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Order ID</th>
-                                <th>Customer</th>
-                                <th>Date</th>
-                                <th>Items</th>
-                                <th>Total</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ordersTableBody">
-                            <tr>
-                                <td colspan="7" style="text-align: center;">No orders yet</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="table-container">
+                    <div class="data-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Payment</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTableBody">
+                                <tr>
+                                    <td colspan="8" class="text-center">No orders yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -906,24 +1224,26 @@
                     <h2>Contact Messages</h2>
                 </div>
                 
-                <div class="data-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Subject</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="messagesTableBody">
-                            <tr>
-                                <td colspan="6" style="text-align: center;">No messages yet</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="table-container">
+                    <div class="data-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Subject</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="messagesTableBody">
+                                <tr>
+                                    <td colspan="6" class="text-center">No messages yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -945,16 +1265,16 @@
                 </div>
 
                 <div class="analytics-grid">
-                    <div class="analytics-card">
-                        <h3>Sales Overview</h3>
-                        <div class="chart-placeholder">
+                    <div class="stat-card">
+                        <h3 style="color: var(--primary-red); margin-bottom: 1rem;">Sales Overview</h3>
+                        <div style="height: 200px; display: flex; align-items: center; justify-content: center; color: var(--text-gray);">
                             <i class="fas fa-chart-bar" style="font-size: 3rem; opacity: 0.3;"></i>
                             <p style="margin-left: 1rem;">Connect Google Analytics</p>
                         </div>
                     </div>
-                    <div class="analytics-card">
-                        <h3>Popular Products</h3>
-                        <div class="chart-placeholder">
+                    <div class="stat-card">
+                        <h3 style="color: var(--primary-red); margin-bottom: 1rem;">Popular Products</h3>
+                        <div style="height: 200px; display: flex; align-items: center; justify-content: center; color: var(--text-gray);">
                             <i class="fas fa-chart-pie" style="font-size: 3rem; opacity: 0.3;"></i>
                             <p style="margin-left: 1rem;">No data yet</p>
                         </div>
@@ -968,24 +1288,27 @@
                     <h2>Customer Management</h2>
                 </div>
                 
-                <div class="data-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Orders</th>
-                                <th>Joined</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="6" style="text-align: center;">No customers yet</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="table-container">
+                    <div class="data-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Orders</th>
+                                    <th>Joined</th>
+                                    <th>Total Spent</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customersTableBody">
+                                <tr>
+                                    <td colspan="7" class="text-center">No customers yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -993,13 +1316,13 @@
             <div id="settingsSection" class="content-section" style="display: none;">
                 <div class="settings-tabs">
                     <div class="settings-tab active" onclick="showSettingsTab('general')">General</div>
-                    <div class="settings-tab" onclick="showSettingsTab('contact')">Contact Info</div>
+                    <div class="settings-tab" onclick="showSettingsTab('contact')">Contact</div>
                     <div class="settings-tab" onclick="showSettingsTab('shipping')">Shipping</div>
                     <div class="settings-tab" onclick="showSettingsTab('password')">Password</div>
                 </div>
 
                 <div id="generalSettings" class="settings-panel">
-                    <h3>General Settings</h3>
+                    <h3 style="color: var(--primary-red); margin-bottom: 1.5rem;">General Settings</h3>
                     <div class="form-group">
                         <label>Store Name</label>
                         <input type="text" value="Bokamoso ba Moso" id="storeName">
@@ -1018,14 +1341,14 @@
                 </div>
 
                 <div id="contactSettings" class="settings-panel" style="display: none;">
-                    <h3>Contact Information</h3>
+                    <h3 style="color: var(--primary-red); margin-bottom: 1.5rem;">Contact Information</h3>
                     <div class="form-group">
                         <label>WhatsApp Number</label>
                         <input type="text" value="+27 72 520 8972" id="whatsappNumber">
                     </div>
                     <div class="form-group">
                         <label>Email Address</label>
-                        <input type="email" value="annadeliwe2017@gmail.com" id="contactEmail">
+                        <input type="email" value="deliweannam@gmail.com" id="contactEmail">
                     </div>
                     <div class="form-group">
                         <label>Business Hours</label>
@@ -1035,7 +1358,7 @@
                 </div>
 
                 <div id="shippingSettings" class="settings-panel" style="display: none;">
-                    <h3>Shipping Settings</h3>
+                    <h3 style="color: var(--primary-red); margin-bottom: 1.5rem;">Shipping Settings</h3>
                     <div class="form-group">
                         <label>Free Shipping Threshold (R)</label>
                         <input type="number" value="500" id="freeShippingThreshold">
@@ -1048,7 +1371,7 @@
                 </div>
 
                 <div id="passwordSettings" class="settings-panel" style="display: none;">
-                    <h3>Change Password</h3>
+                    <h3 style="color: var(--primary-red); margin-bottom: 1.5rem;">Change Password</h3>
                     <div class="form-group">
                         <label>Current Password</label>
                         <input type="password" id="currentPassword">
@@ -1127,1058 +1450,782 @@
         </div>
     </div>
 
-   <script>
-    // Sample product data (matching your website)
-    let products = [
-        {
-            id: 1,
-            name: "Premium Leather Journal",
-            description: "Handcrafted leather journal with premium paper and ribbon bookmark.",
-            price: 899.99,
-            category: "journals",
-            tag: "Bestseller",
-            imagePath: "./images/journal.jpg",
-            stock: 10
-        },
-        {
-            id: 2,
-            name: "Executive Planner",
-            description: "Professional weekly planner with goal-setting sections.",
-            price: 649.99,
-            category: "planners",
-            tag: "New",
-            imagePath: "./images/planner.jpg",
-            stock: 15
-        },
-        {
-            id: 3,
-            name: "Fountain Pen Set",
-            description: "Premium fountain pen with interchangeable nibs.",
-            price: 1299.99,
-            category: "pens",
-            tag: "Premium",
-            imagePath: "./images/pen.jpg",
-            stock: 8
-        },
-        {
-            id: 4,
-            name: "Stationery Gift Set",
-            description: "Complete set including notebook, pen, and accessories.",
-            price: 1499.99,
-            category: "gifts",
-            tag: "Gift",
-            imagePath: "./images/gifts.jpg",
-            stock: 5
-        },
-        {
-            id: 5,
-            name: "Sketch Art Notebook",
-            description: "Heavyweight paper notebook for sketching.",
-            price: 549.99,
-            category: "journals",
-            tag: "Artist",
-            imagePath: "./images/art.jpg",
-            stock: 20
-        },
-        {
-            id: 6,
-            name: "Professional Pen Case",
-            description: "Leather pen case with multiple slots.",
-            price: 749.99,
-            category: "accessories",
-            tag: "Accessory",
-            imagePath: "./images/pen-case.jpg",
-            stock: 12
-        }
-    ];
+    <!-- Invoice Modal -->
+    <div class="modal" id="invoiceModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Order Invoice</h3>
+                <button class="close-modal" onclick="closeInvoiceModal()">&times;</button>
+            </div>
+            <div id="invoiceContent" class="invoice">
+                <!-- Invoice content will be inserted here -->
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem;">
+                <button class="save-btn" onclick="printInvoice()">
+                    <i class="fas fa-print"></i> Print Invoice
+                </button>
+                <button class="save-btn" onclick="downloadInvoice()" style="background: linear-gradient(90deg, #9d4edd, #c77dff);">
+                    <i class="fas fa-download"></i> Download PDF
+                </button>
+            </div>
+        </div>
+    </div>
 
-    let orders = [];
-    let messages = [];
-    let customers = [];
-
-    // Login function
-    function login() {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+    <script>
+        // Your existing JavaScript remains exactly the same
+        // [All your JavaScript functions stay unchanged]
         
-        // Simple authentication (change this for production)
-        if (username === 'admin' && password === 'bokamoso2024') {
-            document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('dashboard').classList.add('active');
-            loadProductsTable();
-            updateStats();
+        // Sample product data
+        let products = [
+            {
+                id: 1,
+                name: "Premium Leather Journal",
+                description: "Handcrafted leather journal with premium paper and ribbon bookmark.",
+                price: 899.99,
+                category: "journals",
+                tag: "Bestseller",
+                imagePath: "./images/journal.jpg",
+                stock: 10
+            },
+            {
+                id: 2,
+                name: "Executive Planner",
+                description: "Professional weekly planner with goal-setting sections.",
+                price: 649.99,
+                category: "planners",
+                tag: "New",
+                imagePath: "./images/planner.jpg",
+                stock: 15
+            },
+            {
+                id: 3,
+                name: "Fountain Pen Set",
+                description: "Premium fountain pen with interchangeable nibs.",
+                price: 1299.99,
+                category: "pens",
+                tag: "Premium",
+                imagePath: "./images/pen.jpg",
+                stock: 8
+            },
+            {
+                id: 4,
+                name: "Stationery Gift Set",
+                description: "Complete set including notebook, pen, and accessories.",
+                price: 1499.99,
+                category: "gifts",
+                tag: "Gift",
+                imagePath: "./images/gifts.jpg",
+                stock: 5
+            },
+            {
+                id: 5,
+                name: "Sketch Art Notebook",
+                description: "Heavyweight paper notebook for sketching.",
+                price: 549.99,
+                category: "journals",
+                tag: "Artist",
+                imagePath: "./images/art.jpg",
+                stock: 20
+            },
+            {
+                id: 6,
+                name: "Professional Pen Case",
+                description: "Leather pen case with multiple slots.",
+                price: 749.99,
+                category: "accessories",
+                tag: "Accessory",
+                imagePath: "./images/pen-case.jpg",
+                stock: 12
+            }
+        ];
+
+        let orders = [];
+        let messages = [];
+        let customers = [];
+
+        // Login function
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
             
-            // Load data from localStorage if exists
-            loadFromLocalStorage();
-        } else {
-            alert('Invalid credentials! Try: admin / bokamoso2024');
-        }
-    }
-
-    function logout() {
-        document.getElementById('loginPage').style.display = 'flex';
-        document.getElementById('dashboard').classList.remove('active');
-    }
-
-    // Show different sections
-    function showSection(section) {
-        // Hide all sections
-        document.querySelectorAll('.content-section').forEach(el => el.style.display = 'none');
-        
-        // Show selected section
-        document.getElementById(section + 'Section').style.display = 'block';
-        
-        // Update active nav item
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-        event.target.closest('.nav-item').classList.add('active');
-        
-        // Update page title
-        const titles = {
-            overview: 'Dashboard Overview',
-            products: 'Product Management',
-            orders: 'Order Management',
-            messages: 'Contact Messages',
-            analytics: 'Analytics',
-            customers: 'Customer Management',
-            settings: 'Settings'
-        };
-        document.getElementById('currentPageTitle').textContent = titles[section];
-        
-        // Close sidebar on mobile
-        if (window.innerWidth <= 768) {
-            document.getElementById('sidebar').classList.remove('active');
-        }
-        
-        // Load section data
-        if (section === 'products') loadProductsTable();
-        if (section === 'messages') loadMessagesTable();
-        if (section === 'orders') loadOrdersTable();
-        if (section === 'customers') loadCustomersTable();
-        if (section === 'overview') {
-            loadRecentOrdersForOverview();
-            loadRecentCustomersForOverview();
-        }
-    }
-
-    function toggleSidebar() {
-        document.getElementById('sidebar').classList.toggle('active');
-    }
-
-    // Product Management
-    function loadProductsTable() {
-        const tbody = document.getElementById('productsTableBody');
-        tbody.innerHTML = '';
-        
-        products.forEach(product => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${product.id}</td>
-                <td><i class="fas fa-image" style="color: var(--text-gray);"></i></td>
-                <td>${product.name}</td>
-                <td>R ${product.price.toFixed(2)}</td>
-                <td>${product.category}</td>
-                <td><span style="background: rgba(255,51,51,0.1); padding: 0.2rem 0.5rem; border-radius: 5px;">${product.tag}</span></td>
-                <td>
-                    <button class="action-btn edit-btn" onclick="editProduct(${product.id})"><i class="fas fa-edit"></i></button>
-                    <button class="action-btn delete-btn" onclick="deleteProduct(${product.id})"><i class="fas fa-trash"></i></button>
-                    <button class="action-btn view-btn" onclick="viewProduct(${product.id})"><i class="fas fa-eye"></i></button>
-                </td>
-            `;
-            tbody.appendChild(row);
-        });
-    }
-
-    function openProductModal(editId = null) {
-        document.getElementById('productModal').classList.add('active');
-        
-        if (editId) {
-            document.getElementById('modalTitle').textContent = 'Edit Product';
-            const product = products.find(p => p.id === editId);
-            if (product) {
-                document.getElementById('productId').value = product.id;
-                document.getElementById('productName').value = product.name;
-                document.getElementById('productDescription').value = product.description;
-                document.getElementById('productPrice').value = product.price;
-                document.getElementById('productCategory').value = product.category;
-                document.getElementById('productTag').value = product.tag;
-                document.getElementById('productImage').value = product.imagePath.split('/').pop();
-                document.getElementById('productStock').value = product.stock || 10;
+            if (username === 'admin' && password === 'bokamoso2024') {
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('dashboard').classList.add('active');
+                loadProductsTable();
+                updateStats();
+                loadFromLocalStorage();
+            } else {
+                alert('Invalid credentials! Try: admin / bokamoso2024');
             }
-        } else {
-            document.getElementById('modalTitle').textContent = 'Add New Product';
-            document.getElementById('productForm').reset();
-            document.getElementById('productId').value = '';
         }
-    }
 
-    function closeProductModal() {
-        document.getElementById('productModal').classList.remove('active');
-    }
+        function logout() {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('dashboard').classList.remove('active');
+            toggleSidebar(); // Close sidebar on logout
+        }
 
-    // Save product from modal
-    document.getElementById('productForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const productId = document.getElementById('productId').value;
-        const productData = {
-            id: productId ? parseInt(productId) : Date.now(),
-            name: document.getElementById('productName').value,
-            description: document.getElementById('productDescription').value,
-            price: parseFloat(document.getElementById('productPrice').value),
-            category: document.getElementById('productCategory').value,
-            tag: document.getElementById('productTag').value,
-            imagePath: './images/' + document.getElementById('productImage').value,
-            stock: parseInt(document.getElementById('productStock').value)
-        };
-        
-        if (productId) {
-            // Edit existing product
-            const index = products.findIndex(p => p.id === parseInt(productId));
-            if (index !== -1) {
-                products[index] = productData;
+        // Toggle sidebar function
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Show different sections
+        function showSection(section) {
+            document.querySelectorAll('.content-section').forEach(el => el.style.display = 'none');
+            document.getElementById(section + 'Section').style.display = 'block';
+            
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+            
+            const titles = {
+                overview: 'Dashboard Overview',
+                products: 'Product Management',
+                orders: 'Order Management',
+                messages: 'Contact Messages',
+                analytics: 'Analytics',
+                customers: 'Customer Management',
+                settings: 'Settings'
+            };
+            document.getElementById('currentPageTitle').textContent = titles[section];
+            
+            // Close sidebar on mobile after selection
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
             }
-        } else {
-            // Add new product
-            products.push(productData);
+            
+            if (section === 'products') loadProductsTable();
+            if (section === 'messages') loadMessagesTable();
+            if (section === 'orders') loadOrdersTable();
+            if (section === 'customers') loadCustomersTable();
         }
-        
-        // Save to localStorage
-        localStorage.setItem('bokamosoProducts', JSON.stringify(products));
-        
-        // Update website products (if possible)
-        updateWebsiteProducts();
-        
-        closeProductModal();
-        loadProductsTable();
-        updateStats();
-        showNotification('Product saved successfully!');
-    });
 
-    function editProduct(id) {
-        openProductModal(id);
-    }
+        // Product Management
+        function loadProductsTable() {
+            const tbody = document.getElementById('productsTableBody');
+            tbody.innerHTML = '';
+            
+            products.forEach(product => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${product.id}</td>
+                    <td><i class="fas fa-image" style="color: var(--text-gray);"></i></td>
+                    <td>${product.name}</td>
+                    <td>R ${product.price.toFixed(2)}</td>
+                    <td>${product.category}</td>
+                    <td><span style="background: rgba(255,51,51,0.1); padding: 0.2rem 0.5rem; border-radius: 5px;">${product.tag}</span></td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editProduct(${product.id})"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn delete-btn" onclick="deleteProduct(${product.id})"><i class="fas fa-trash"></i></button>
+                        <button class="action-btn view-btn" onclick="viewProduct(${product.id})"><i class="fas fa-eye"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
 
-    function deleteProduct(id) {
-        if (confirm('Are you sure you want to delete this product?')) {
-            products = products.filter(p => p.id !== id);
+        function openProductModal(editId = null) {
+            document.getElementById('productModal').classList.add('active');
+            
+            if (editId) {
+                document.getElementById('modalTitle').textContent = 'Edit Product';
+                const product = products.find(p => p.id === editId);
+                if (product) {
+                    document.getElementById('productId').value = product.id;
+                    document.getElementById('productName').value = product.name;
+                    document.getElementById('productDescription').value = product.description;
+                    document.getElementById('productPrice').value = product.price;
+                    document.getElementById('productCategory').value = product.category;
+                    document.getElementById('productTag').value = product.tag;
+                    document.getElementById('productImage').value = product.imagePath.split('/').pop();
+                    document.getElementById('productStock').value = product.stock || 10;
+                }
+            } else {
+                document.getElementById('modalTitle').textContent = 'Add New Product';
+                document.getElementById('productForm').reset();
+                document.getElementById('productId').value = '';
+            }
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.remove('active');
+        }
+
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const productId = document.getElementById('productId').value;
+            const productData = {
+                id: productId ? parseInt(productId) : Date.now(),
+                name: document.getElementById('productName').value,
+                description: document.getElementById('productDescription').value,
+                price: parseFloat(document.getElementById('productPrice').value),
+                category: document.getElementById('productCategory').value,
+                tag: document.getElementById('productTag').value,
+                imagePath: './images/' + document.getElementById('productImage').value,
+                stock: parseInt(document.getElementById('productStock').value)
+            };
+            
+            if (productId) {
+                const index = products.findIndex(p => p.id === parseInt(productId));
+                if (index !== -1) {
+                    products[index] = productData;
+                }
+            } else {
+                products.push(productData);
+            }
+            
             localStorage.setItem('bokamosoProducts', JSON.stringify(products));
             updateWebsiteProducts();
+            closeProductModal();
             loadProductsTable();
             updateStats();
-            showNotification('Product deleted!');
-        }
-    }
-
-    function viewProduct(id) {
-        alert('View product details - This would show product preview');
-    }
-
-    // Messages
-    function loadMessagesTable() {
-        const tbody = document.getElementById('messagesTableBody');
-        const recentMessages = document.getElementById('recentMessages')?.querySelector('tbody');
-        
-        if (messages.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No messages yet</td></tr>';
-            if (recentMessages) {
-                recentMessages.innerHTML = '<tr><td colspan="4" style="text-align: center;">No messages yet</td></tr>';
-            }
-            document.getElementById('messageCount').textContent = '0';
-            return;
-        }
-        
-        tbody.innerHTML = '';
-        messages.forEach(msg => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${msg.name}</td>
-                <td>${msg.email}</td>
-                <td>${msg.subject}</td>
-                <td>${msg.date}</td>
-                <td><span class="status-badge ${msg.read ? '' : 'status-pending'}">${msg.read ? 'Read' : 'Unread'}</span></td>
-                <td>
-                    <button class="action-btn view-btn" onclick="viewMessage(${msg.id})"><i class="fas fa-eye"></i></button>
-                    <button class="action-btn delete-btn" onclick="deleteMessage(${msg.id})"><i class="fas fa-trash"></i></button>
-                    <button class="action-btn" onclick="addToCustomers('${msg.name}', '${msg.email}', '${msg.phone || ''}')" 
-                            style="background: rgba(0,200,81,0.1); color: #00c851; border: 1px solid #00c851;" title="Add to Customers">
-                        <i class="fas fa-user-plus"></i>
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(row);
+            showNotification('Product saved successfully!');
         });
-        
-        // Update recent messages
-        if (recentMessages) {
-            recentMessages.innerHTML = '';
-            messages.slice(0, 3).forEach(msg => {
+
+        function editProduct(id) {
+            openProductModal(id);
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('bokamosoProducts', JSON.stringify(products));
+                updateWebsiteProducts();
+                loadProductsTable();
+                updateStats();
+                showNotification('Product deleted!');
+            }
+        }
+
+        function viewProduct(id) {
+            const product = products.find(p => p.id === id);
+            alert(`Product Details:\n\nName: ${product.name}\nPrice: R${product.price}\nStock: ${product.stock}`);
+        }
+
+        // Messages
+        function loadMessagesTable() {
+            const tbody = document.getElementById('messagesTableBody');
+            const recentMessages = document.getElementById('recentMessages')?.querySelector('tbody');
+            
+            if (messages.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">No messages yet</td></tr>';
+                if (recentMessages) {
+                    recentMessages.innerHTML = '<tr><td colspan="4" class="text-center">No messages yet</td></tr>';
+                }
+                document.getElementById('messageCount').textContent = '0';
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            messages.forEach(msg => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${msg.name}</td>
+                    <td>${msg.email}</td>
                     <td>${msg.subject}</td>
                     <td>${msg.date}</td>
                     <td><span class="status-badge ${msg.read ? '' : 'status-pending'}">${msg.read ? 'Read' : 'Unread'}</span></td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewMessage(${msg.id})"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn delete-btn" onclick="deleteMessage(${msg.id})"><i class="fas fa-trash"></i></button>
+                    </td>
                 `;
-                recentMessages.appendChild(row);
+                tbody.appendChild(row);
             });
-        }
-        
-        // Update message count
-        const unreadCount = messages.filter(m => !m.read).length;
-        document.getElementById('messageCount').textContent = unreadCount;
-    }
-
-    function viewMessage(id) {
-        const msg = messages.find(m => m.id === id);
-        if (msg) {
-            msg.read = true;
-            loadMessagesTable();
-            alert(`From: ${msg.name}\nEmail: ${msg.email}\nPhone: ${msg.phone || 'N/A'}\nSubject: ${msg.subject}\nMessage: ${msg.message}\n\nDate: ${msg.date}`);
-        }
-    }
-
-    function deleteMessage(id) {
-        if (confirm('Delete this message?')) {
-            messages = messages.filter(m => m.id !== id);
-            localStorage.setItem('bokamosoMessages', JSON.stringify(messages));
-            loadMessagesTable();
-            showNotification('Message deleted');
-        }
-    }
-
-    // ============= CUSTOMER MANAGEMENT =============
-
-    // Load customers table
-    function loadCustomersTable() {
-        const tbody = document.querySelector('#customersSection tbody');
-        if (!tbody) return;
-        
-        // Load customers from localStorage
-        const savedCustomers = localStorage.getItem('bokamosoCustomers');
-        if (savedCustomers) {
-            customers = JSON.parse(savedCustomers);
-        }
-        
-        if (customers.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No customers yet</td></tr>';
-            return;
-        }
-        
-        tbody.innerHTML = '';
-        customers.sort((a, b) => new Date(b.joined) - new Date(a.joined));
-        
-        customers.forEach(customer => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${customer.name || 'N/A'}</td>
-                <td>${customer.email || 'N/A'}</td>
-                <td>${customer.phone || 'N/A'}</td>
-                <td>${customer.orders || 0}</td>
-                <td>${customer.joined || 'N/A'}</td>
-                <td>R ${customer.totalSpent ? customer.totalSpent.toFixed(2) : '0.00'}</td>
-                <td>
-                    <button class="action-btn view-btn" onclick="viewCustomer('${customer.id}')" title="View Details">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="action-btn" onclick="sendCustomerWhatsApp('${customer.phone}')" title="Send WhatsApp" 
-                            style="background: rgba(37, 211, 102, 0.1); color: #25D366; border: 1px solid #25D366;">
-                        <i class="fab fa-whatsapp"></i>
-                    </button>
-                    <button class="action-btn edit-btn" onclick="emailCustomer('${customer.email}')" title="Send Email">
-                        <i class="fas fa-envelope"></i>
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(row);
-        });
-    }
-
-    // Load recent customers for overview
-    function loadRecentCustomersForOverview() {
-        const recentCustomers = document.querySelector('#overviewSection .data-table:last-child tbody');
-        if (!recentCustomers) return;
-        
-        if (customers.length === 0) {
-            recentCustomers.innerHTML = '<tr><td colspan="4" style="text-align: center;">No customers yet</td></tr>';
-            return;
-        }
-        
-        recentCustomers.innerHTML = '';
-        customers.slice(0, 5).forEach(customer => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${customer.name || 'N/A'}</td>
-                <td>${customer.email || 'N/A'}</td>
-                <td>${customer.phone || 'N/A'}</td>
-                <td>${customer.orders || 0}</td>
-            `;
-            recentCustomers.appendChild(row);
-        });
-    }
-
-    // View customer details
-    function viewCustomer(customerId) {
-        const customer = customers.find(c => c.id == customerId);
-        if (!customer) return;
-        
-        // Find customer's orders
-        const customerOrders = orders.filter(o => o.customer?.email === customer.email);
-        
-        let details = `👤 CUSTOMER DETAILS\n\n`;
-        details += `Name: ${customer.name || 'N/A'}\n`;
-        details += `Email: ${customer.email || 'N/A'}\n`;
-        details += `Phone: ${customer.phone || 'N/A'}\n`;
-        details += `ID Number: ${customer.idNumber || 'N/A'}\n`;
-        details += `Joined: ${customer.joined || 'N/A'}\n`;
-        details += `Total Orders: ${customer.orders || 0}\n`;
-        details += `Total Spent: R ${(customer.totalSpent || 0).toFixed(2)}\n`;
-        details += `Last Order: ${customer.lastOrder || 'N/A'}\n\n`;
-        
-        if (customerOrders.length > 0) {
-            details += `📦 RECENT ORDERS\n`;
-            customerOrders.slice(0, 3).forEach(order => {
-                details += `- ${order.id}: R ${order.total.toFixed(2)} (${order.status})\n`;
-            });
-        }
-        
-        alert(details);
-    }
-
-    // Send WhatsApp to customer
-    function sendCustomerWhatsApp(phone) {
-        if (!phone) {
-            alert('No phone number available for this customer');
-            return;
-        }
-        
-        const cleanPhone = phone.replace(/[^0-9]/g, '');
-        const message = encodeURIComponent(
-            `Hello! 👋\n\nThis is Bokamoso ba Moso. We have special offers and new arrivals you might be interested in. Visit our store or website for more information.`
-        );
-        
-        window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank');
-    }
-
-    // Email customer
-    function emailCustomer(email) {
-        if (!email) {
-            alert('No email address available for this customer');
-            return;
-        }
-        
-        window.open(`mailto:${email}?subject=Special Offers from Bokamoso ba Moso&body=Hello,%0D%0A%0D%0AWe have exciting new products and special offers for you! Visit our store or website to check them out.%0D%0A%0D%0AThank you for being a valued customer.%0D%0A%0D%0ABokamoso ba Moso Team`);
-    }
-
-    // Add from message to customers
-    function addToCustomers(name, email, phone) {
-        const customers = JSON.parse(localStorage.getItem('bokamosoCustomers')) || [];
-        
-        // Check if already exists
-        const exists = customers.some(c => c.email === email);
-        if (exists) {
-            showNotification('Customer already exists');
-            return;
-        }
-        
-        const newCustomer = {
-            id: Date.now(),
-            name: name,
-            email: email,
-            phone: phone,
-            source: 'Contact Form',
-            joined: new Date().toLocaleString(),
-            orders: 0,
-            totalSpent: 0
-        };
-        
-        customers.push(newCustomer);
-        localStorage.setItem('bokamosoCustomers', JSON.stringify(customers));
-        
-        showNotification('Customer added successfully!');
-        if (document.getElementById('customersSection').style.display !== 'none') {
-            loadCustomersTable();
-        }
-    }
-
-    // Export customers to CSV
-    function exportCustomersToCSV() {
-        if (customers.length === 0) {
-            showNotification('No customers to export');
-            return;
-        }
-        
-        let csv = 'Name,Email,Phone,Orders,Total Spent,Joined,Last Order\n';
-        
-        customers.forEach(customer => {
-            csv += `"${customer.name || ''}","${customer.email || ''}","${customer.phone || ''}",`;
-            csv += `"${customer.orders || 0}","${(customer.totalSpent || 0).toFixed(2)}","${customer.joined || ''}","${customer.lastOrder || ''}"\n`;
-        });
-        
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `bokamoso-customers-${new Date().toISOString().split('T')[0]}.csv`;
-        a.click();
-        
-        showNotification('Customers exported successfully!');
-    }
-
-    // ============= ENHANCED ORDER MANAGEMENT =============
-
-    // Load orders for overview section
-    function loadRecentOrdersForOverview() {
-        const recentOrders = document.getElementById('recentOrdersTable')?.querySelector('tbody');
-        if (!recentOrders) return;
-        
-        if (orders.length === 0) {
-            recentOrders.innerHTML = '<tr><td colspan="5" style="text-align: center;">No orders yet</td></tr>';
-            return;
-        }
-        
-        // Sort orders by date (newest first)
-        orders.sort((a, b) => new Date(b.date) - new Date(a.date));
-        
-        recentOrders.innerHTML = '';
-        orders.slice(0, 5).forEach(order => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${order.id}</td>
-                <td>${order.customer?.name || 'N/A'}</td>
-                <td>${order.date}</td>
-                <td>R ${order.total?.toFixed(2) || '0.00'}</td>
-                <td><span class="status-badge status-${order.status || 'pending'}">${order.status || 'pending'}</span></td>
-            `;
-            recentOrders.appendChild(row);
-        });
-    }
-
-    // Load orders table in orders section
-    function loadOrdersTable() {
-        const tbody = document.getElementById('ordersTableBody');
-        if (!tbody) return;
-        
-        // Load orders from localStorage
-        const savedOrders = localStorage.getItem('bokamosoOrders');
-        if (savedOrders) {
-            orders = JSON.parse(savedOrders);
-        }
-        
-        if (orders.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No orders yet</td></tr>';
-            updateOrderStats();
-            return;
-        }
-        
-        // Sort orders by date (newest first)
-        orders.sort((a, b) => new Date(b.date) - new Date(a.date));
-        
-        tbody.innerHTML = '';
-        orders.forEach(order => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${order.id}</td>
-                <td>${order.customer?.name || 'N/A'}</td>
-                <td>${order.date}</td>
-                <td>${order.items?.length || 0}</td>
-                <td>R ${order.total?.toFixed(2) || '0.00'}</td>
-                <td>
-                    <select class="status-select" onchange="updateOrderStatus('${order.id}', this.value)" 
-                            style="background: rgba(255,255,255,0.1); color: white; padding: 0.3rem; border-radius: 5px; border: 1px solid var(--border-color);">
-                        <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-                        <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
-                        <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
-                        <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
-                        <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-                    </select>
-                </td>
-                <td>
-                    <span class="status-badge status-${order.payment?.status?.toLowerCase() || 'pending'}">
-                        ${order.payment?.status || 'Pending'}
-                    </span>
-                </td>
-                <td>
-                    <button class="action-btn view-btn" onclick="viewOrderDetails('${order.id}')" title="View Details">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="action-btn edit-btn" onclick="printOrder('${order.id}')" title="Print Packing Slip">
-                        <i class="fas fa-print"></i>
-                    </button>
-                    <button class="action-btn" onclick="sendWhatsAppNotification('${order.id}')" title="Send WhatsApp Update" 
-                            style="background: rgba(37, 211, 102, 0.1); color: #25D366; border: 1px solid #25D366;">
-                        <i class="fab fa-whatsapp"></i>
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(row);
-        });
-        
-        updateOrderStats();
-        loadRecentOrdersForOverview();
-    }
-
-    // Update order statistics
-    function updateOrderStats() {
-        const totalOrders = orders.length;
-        const pendingOrders = orders.filter(o => o.status === 'pending').length;
-        const processingOrders = orders.filter(o => o.status === 'processing').length;
-        const completedOrders = orders.filter(o => o.status === 'delivered').length;
-        const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
-        
-        document.getElementById('totalOrders').textContent = totalOrders;
-        document.getElementById('totalRevenue').textContent = `R ${totalRevenue.toFixed(2)}`;
-        
-        // Update additional stats if elements exist
-        if (document.getElementById('pendingOrders')) {
-            document.getElementById('pendingOrders').textContent = pendingOrders;
-        }
-        if (document.getElementById('processingOrders')) {
-            document.getElementById('processingOrders').textContent = processingOrders;
-        }
-        if (document.getElementById('completedOrders')) {
-            document.getElementById('completedOrders').textContent = completedOrders;
-        }
-    }
-
-    // Update order status
-    function updateOrderStatus(orderId, newStatus) {
-        const order = orders.find(o => o.id === orderId);
-        if (order) {
-            order.status = newStatus;
-            localStorage.setItem('bokamosoOrders', JSON.stringify(orders));
-            loadOrdersTable();
-            showNotification(`Order ${orderId} status updated to ${newStatus}`);
             
-            // Update customer total spent if delivered
-            if (newStatus === 'delivered') {
-                updateCustomerTotal(order.customer?.email, order.total);
+            if (recentMessages) {
+                recentMessages.innerHTML = '';
+                messages.slice(0, 3).forEach(msg => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${msg.name}</td>
+                        <td>${msg.subject}</td>
+                        <td>${msg.date}</td>
+                        <td><span class="status-badge ${msg.read ? '' : 'status-pending'}">${msg.read ? 'Read' : 'Unread'}</span></td>
+                    `;
+                    recentMessages.appendChild(row);
+                });
             }
             
-            // Send automatic notification for shipped/delivered
-            if (newStatus === 'shipped' || newStatus === 'delivered') {
-                if (confirm(`Send ${newStatus} notification to customer via WhatsApp?`)) {
-                    sendWhatsAppNotification(orderId);
+            const unreadCount = messages.filter(m => !m.read).length;
+            document.getElementById('messageCount').textContent = unreadCount;
+        }
+
+        function viewMessage(id) {
+            const msg = messages.find(m => m.id === id);
+            if (msg) {
+                msg.read = true;
+                loadMessagesTable();
+                alert(`From: ${msg.name}\nEmail: ${msg.email}\nSubject: ${msg.subject}\nMessage: ${msg.message}`);
+            }
+        }
+
+        function deleteMessage(id) {
+            if (confirm('Delete this message?')) {
+                messages = messages.filter(m => m.id !== id);
+                localStorage.setItem('bokamosoMessages', JSON.stringify(messages));
+                loadMessagesTable();
+                showNotification('Message deleted');
+            }
+        }
+
+        // Orders with Invoice Functionality
+        function loadOrdersTable() {
+            const tbody = document.getElementById('ordersTableBody');
+            const recentOrders = document.getElementById('recentOrdersTable').querySelector('tbody');
+            
+            if (orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center">No orders yet</td></tr>';
+                if (recentOrders) {
+                    recentOrders.innerHTML = '<tr><td colspan="5" class="text-center">No orders yet</td></tr>';
+                }
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            orders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.customer?.name || 'N/A'}</td>
+                    <td>${order.date}</td>
+                    <td>${order.items?.length || 0}</td>
+                    <td>R ${(order.total || 0).toFixed(2)}</td>
+                    <td><span class="status-badge status-${order.status || 'pending'}">${order.status || 'pending'}</span></td>
+                    <td><span class="status-badge status-${order.payment?.status?.toLowerCase() || 'pending'}">${order.payment?.status || 'Pending'}</span></td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewOrder('${order.id}')" title="View Order"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn invoice-btn" onclick="showInvoice('${order.id}')" title="View Invoice"><i class="fas fa-file-invoice"></i></button>
+                        <button class="action-btn edit-btn" onclick="updateOrderStatus('${order.id}')" title="Update Status"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn whatsapp-btn" onclick="sendWhatsApp('${order.id}')" title="Send WhatsApp"><i class="fab fa-whatsapp"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Update recent orders
+            if (recentOrders) {
+                recentOrders.innerHTML = '';
+                orders.slice(0, 5).forEach(order => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${order.id}</td>
+                        <td>${order.customer?.name || 'N/A'}</td>
+                        <td>${order.date}</td>
+                        <td>R ${(order.total || 0).toFixed(2)}</td>
+                        <td><span class="status-badge status-${order.status || 'pending'}">${order.status || 'pending'}</span></td>
+                    `;
+                    recentOrders.appendChild(row);
+                });
+            }
+        }
+
+        // Show Invoice
+        function showInvoice(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            const invoiceContent = document.getElementById('invoiceContent');
+            
+            // Format items list
+            let itemsList = '';
+            if (order.items && order.items.length > 0) {
+                order.items.forEach(item => {
+                    itemsList += `
+                        <div class="invoice-row">
+                            <span>${item.name} x${item.quantity}</span>
+                            <span>R ${(item.price * item.quantity).toFixed(2)}</span>
+                        </div>
+                    `;
+                });
+            }
+            
+            invoiceContent.innerHTML = `
+                <div class="invoice-header">
+                    <h2>BOKAMOSO BA MOSO</h2>
+                    <p>The Promise of Tomorrow, Written Today</p>
+                    <p style="margin-top: 1rem;">INVOICE #${order.id}</p>
+                </div>
+                
+                <div class="invoice-details">
+                    <div class="invoice-row">
+                        <span>Date:</span>
+                        <span>${order.date}</span>
+                    </div>
+                    <div class="invoice-row">
+                        <span>Customer:</span>
+                        <span>${order.customer?.name || 'N/A'}</span>
+                    </div>
+                    <div class="invoice-row">
+                        <span>Email:</span>
+                        <span>${order.customer?.email || 'N/A'}</span>
+                    </div>
+                    <div class="invoice-row">
+                        <span>Phone:</span>
+                        <span>${order.customer?.phone || 'N/A'}</span>
+                    </div>
+                    <div class="invoice-row">
+                        <span>Address:</span>
+                        <span>${order.shipping?.address || 'N/A'}</span>
+                    </div>
+                </div>
+                
+                <h4 style="color: var(--primary-red); margin: 1rem 0;">Order Items</h4>
+                ${itemsList}
+                
+                <div class="invoice-details" style="margin-top: 1rem;">
+                    <div class="invoice-row">
+                        <span>Subtotal:</span>
+                        <span>R ${(order.subtotal || 0).toFixed(2)}</span>
+                    </div>
+                    <div class="invoice-row">
+                        <span>Shipping:</span>
+                        <span>R ${(order.shippingCost || 0).toFixed(2)}</span>
+                    </div>
+                    <div class="invoice-row invoice-total">
+                        <span>TOTAL:</span>
+                        <span>R ${(order.total || 0).toFixed(2)}</span>
+                    </div>
+                </div>
+                
+                <div class="invoice-details" style="margin-top: 1rem;">
+                    <div class="invoice-row">
+                        <span>Payment Method:</span>
+                        <span>${order.payment?.method || 'Cash on Delivery'}</span>
+                    </div>
+                    <div class="invoice-row">
+                        <span>Payment Status:</span>
+                        <span class="status-badge status-${order.payment?.status?.toLowerCase() || 'pending'}">${order.payment?.status || 'Pending'}</span>
+                    </div>
+                    <div class="invoice-row">
+                        <span>Order Status:</span>
+                        <span class="status-badge status-${order.status || 'pending'}">${order.status || 'pending'}</span>
+                    </div>
+                </div>
+                
+                <div class="invoice-footer">
+                    <p>Thank you for shopping with Bokamoso ba Moso!</p>
+                    <p>Contact: ${localStorage.getItem('bokamosoWhatsapp') || '+27 72 520 8972'} | ${localStorage.getItem('bokamosoEmail') || 'deliweannam@gmail.com'}</p>
+                </div>
+            `;
+            
+            document.getElementById('invoiceModal').classList.add('active');
+        }
+
+        function closeInvoiceModal() {
+            document.getElementById('invoiceModal').classList.remove('active');
+        }
+
+        function printInvoice() {
+            const invoiceContent = document.getElementById('invoiceContent').innerHTML;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Bokamoso ba Moso - Invoice</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; }
+                        .invoice { max-width: 800px; margin: 0 auto; }
+                        .invoice-header { text-align: center; margin-bottom: 30px; }
+                        .invoice-header h2 { color: #ff3333; }
+                        .invoice-details { margin: 20px 0; }
+                        .invoice-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #ddd; }
+                        .invoice-total { font-weight: bold; color: #ff3333; }
+                        .status-badge { padding: 3px 10px; border-radius: 20px; }
+                        .status-pending { background: #ffbb33; color: black; }
+                        .status-processing { background: #00c851; color: white; }
+                        .status-shipped { background: #007bff; color: white; }
+                        .status-delivered { background: #28a745; color: white; }
+                        .status-cancelled { background: #dc3545; color: white; }
+                        @media print {
+                            body { padding: 0; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="invoice">
+                        ${invoiceContent}
+                    </div>
+                    <script>
+                        window.onload = function() { window.print(); window.close(); }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
+        function downloadInvoice() {
+            const invoiceContent = document.getElementById('invoiceContent').innerHTML;
+            const blob = new Blob([`
+                <html>
+                <head>
+                    <title>Bokamoso ba Moso - Invoice</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 40px; }
+                        .invoice { max-width: 800px; margin: 0 auto; }
+                        .invoice-header { text-align: center; margin-bottom: 30px; }
+                        .invoice-header h2 { color: #ff3333; }
+                        .invoice-details { margin: 20px 0; }
+                        .invoice-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #ddd; }
+                        .invoice-total { font-weight: bold; color: #ff3333; }
+                    </style>
+                </head>
+                <body>
+                    <div class="invoice">
+                        ${invoiceContent}
+                    </div>
+                </body>
+                </html>
+            `], { type: 'text/html' });
+            
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `invoice-${Date.now()}.html`;
+            a.click();
+        }
+
+        function sendWhatsApp(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            const phoneNumber = order.customer?.phone?.replace(/[^0-9]/g, '');
+            if (!phoneNumber) {
+                alert('No phone number available for this order');
+                return;
+            }
+            
+            const message = encodeURIComponent(
+                `Hello ${order.customer?.name}! 👋\n\n` +
+                `Your order ${order.id} has been ${order.status}.\n\n` +
+                `Total: R ${(order.total || 0).toFixed(2)}\n` +
+                `Thank you for shopping with Bokamoso ba Moso! ✨`
+            );
+            
+            window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+        }
+
+        function viewOrder(id) {
+            const order = orders.find(o => o.id === id);
+            if (!order) return;
+            
+            let details = `📦 ORDER DETAILS\n\n`;
+            details += `Order ID: ${order.id}\n`;
+            details += `Date: ${order.date}\n`;
+            details += `Status: ${order.status}\n\n`;
+            
+            details += `👤 CUSTOMER INFORMATION\n`;
+            details += `Name: ${order.customer?.name || 'N/A'}\n`;
+            details += `Email: ${order.customer?.email || 'N/A'}\n`;
+            details += `Phone: ${order.customer?.phone || 'N/A'}\n\n`;
+            
+            details += `📦 ITEMS ORDERED\n`;
+            if (order.items && order.items.length > 0) {
+                order.items.forEach(item => {
+                    details += `- ${item.name || 'Product'} x${item.quantity || 1}: R ${(item.price * item.quantity || 0).toFixed(2)}\n`;
+                });
+            }
+            
+            details += `\n💰 TOTAL: R ${(order.total || 0).toFixed(2)}\n\n`;
+            details += `🚚 DELIVERY ADDRESS:\n${order.shipping?.address || 'N/A'}\n`;
+            
+            alert(details);
+        }
+
+        function updateOrderStatus(id) {
+            const newStatus = prompt('Enter new status (pending/processing/shipped/delivered/cancelled):');
+            if (newStatus) {
+                const order = orders.find(o => o.id === id);
+                if (order) {
+                    order.status = newStatus;
+                    localStorage.setItem('bokamosoOrders', JSON.stringify(orders));
+                    loadOrdersTable();
+                    updateStats();
+                    showNotification('Order status updated');
                 }
             }
         }
-    }
 
-    // Update customer total spent
-    function updateCustomerTotal(email, amount) {
-        if (!email) return;
-        
-        const customers = JSON.parse(localStorage.getItem('bokamosoCustomers')) || [];
-        const customer = customers.find(c => c.email === email);
-        
-        if (customer) {
-            customer.totalSpent = (customer.totalSpent || 0) + (amount || 0);
-            customer.lastOrder = new Date().toLocaleString();
-            customer.orders = (customer.orders || 0) + 1;
-            localStorage.setItem('bokamosoCustomers', JSON.stringify(customers));
-        }
-    }
-
-    // View detailed order information
-    function viewOrderDetails(orderId) {
-        const order = orders.find(o => o.id === orderId);
-        if (!order) return;
-        
-        let details = `📦 ORDER DETAILS\n\n`;
-        details += `Order ID: ${order.id}\n`;
-        details += `Date: ${order.date}\n`;
-        details += `Status: ${order.status}\n\n`;
-        
-        details += `👤 CUSTOMER INFORMATION\n`;
-        details += `Name: ${order.customer?.name || 'N/A'}\n`;
-        details += `Email: ${order.customer?.email || 'N/A'}\n`;
-        details += `Phone: ${order.customer?.phone || 'N/A'}\n`;
-        details += `ID Number: ${order.customer?.idNumber || 'N/A'}\n\n`;
-        
-        details += `📦 ITEMS ORDERED\n`;
-        if (order.items && order.items.length > 0) {
-            order.items.forEach(item => {
-                details += `- ${item.name || 'Product'} x${item.quantity || 1}: R ${(item.subtotal || item.price * item.quantity || 0).toFixed(2)}\n`;
+        // Customers
+        function loadCustomersTable() {
+            const tbody = document.getElementById('customersTableBody');
+            if (!tbody) return;
+            
+            if (customers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center">No customers yet</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            customers.forEach(customer => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${customer.name || 'N/A'}</td>
+                    <td>${customer.email || 'N/A'}</td>
+                    <td>${customer.phone || 'N/A'}</td>
+                    <td>${customer.orders || 0}</td>
+                    <td>${customer.joined || 'N/A'}</td>
+                    <td>R ${(customer.totalSpent || 0).toFixed(2)}</td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewCustomer('${customer.id}')"><i class="fas fa-eye"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(row);
             });
-        } else {
-            details += `No items details available\n`;
         }
-        
-        details += `\n💰 PAYMENT SUMMARY\n`;
-        details += `Subtotal: R ${(order.subtotal || 0).toFixed(2)}\n`;
-        details += `Shipping: R ${(order.shippingCost || 0).toFixed(2)}\n`;
-        details += `TOTAL: R ${(order.total || 0).toFixed(2)}\n\n`;
-        
-        details += `🚚 DELIVERY DETAILS\n`;
-        details += `Address: ${order.shipping?.address || 'N/A'}\n`;
-        details += `Method: ${order.shipping?.method || 'Standard'}\n\n`;
-        
-        details += `💳 PAYMENT METHOD\n`;
-        details += `${order.payment?.method || 'Cash on Delivery'} - ${order.payment?.status || 'Pending'}\n\n`;
-        
-        if (order.notes) {
-            details += `📝 NOTES\n${order.notes}\n`;
+
+        function viewCustomer(id) {
+            const customer = customers.find(c => c.id == id);
+            alert(`Customer: ${customer.name}\nEmail: ${customer.email}\nPhone: ${customer.phone}\nOrders: ${customer.orders}\nTotal Spent: R${customer.totalSpent}`);
         }
-        
-        alert(details);
-    }
 
-    // Print order (for packing slip)
-    function printOrder(orderId) {
-        const order = orders.find(o => o.id === orderId);
-        if (!order) return;
-        
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write(`
-            <html>
-            <head>
-                <title>Order ${order.id}</title>
-                <style>
-                    body { font-family: Arial, sans-serif; padding: 20px; }
-                    .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #ff3333; padding-bottom: 20px; }
-                    .header h1 { color: #ff3333; margin: 0; }
-                    .header h2 { color: #333; margin: 10px 0 0; }
-                    .section { margin-bottom: 30px; }
-                    .section h3 { color: #ff3333; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
-                    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
-                    th { background: #f5f5f5; padding: 12px; text-align: left; }
-                    td { padding: 10px; border-bottom: 1px solid #eee; }
-                    .total-row { font-weight: bold; background: #f9f9f9; }
-                    .footer { margin-top: 50px; text-align: center; color: #666; font-size: 12px; }
-                    .highlight { color: #ff3333; font-weight: bold; }
-                </style>
-            </head>
-            <body>
-                <div class="header">
-                    <h1>BOKAMOSO BA MOSO</h1>
-                    <h2>Packing Slip - Order ${order.id}</h2>
-                    <p>Date: ${order.date}</p>
-                </div>
-                
-                <div class="section">
-                    <h3>Customer Details</h3>
-                    <p><strong>Name:</strong> ${order.customer?.name || 'N/A'}</p>
-                    <p><strong>Email:</strong> ${order.customer?.email || 'N/A'}</p>
-                    <p><strong>Phone:</strong> ${order.customer?.phone || 'N/A'}</p>
-                </div>
-                
-                <div class="section">
-                    <h3>Shipping Address</h3>
-                    <p>${order.shipping?.address || 'N/A'}</p>
-                </div>
-                
-                <div class="section">
-                    <h3>Order Items</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
-                                <th>Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${order.items ? order.items.map(item => `
-                                <tr>
-                                    <td>${item.name || 'Product'}</td>
-                                    <td>${item.quantity || 1}</td>
-                                    <td>R ${(item.price || 0).toFixed(2)}</td>
-                                    <td>R ${(item.subtotal || (item.price * item.quantity) || 0).toFixed(2)}</td>
-                                </tr>
-                            `).join('') : '<tr><td colspan="4">No items</td></tr>'}
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="section">
-                    <table>
-                        <tr>
-                            <td><strong>Subtotal:</strong></td>
-                            <td>R ${(order.subtotal || 0).toFixed(2)}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Shipping:</strong></td>
-                            <td>R ${(order.shippingCost || 0).toFixed(2)}</td>
-                        </tr>
-                        <tr class="total-row">
-                            <td><strong>TOTAL:</strong></td>
-                            <td class="highlight">R ${(order.total || 0).toFixed(2)}</td>
-                        </tr>
-                    </table>
-                </div>
-                
-                <div class="section">
-                    <p><strong>Payment Method:</strong> ${order.payment?.method || 'Cash on Delivery'}</p>
-                    <p><strong>Payment Status:</strong> ${order.payment?.status || 'Pending'}</p>
-                    ${order.notes ? `<p><strong>Notes:</strong> ${order.notes}</p>` : ''}
-                </div>
-                
-                <div class="footer">
-                    <p>Thank you for choosing Bokamoso ba Moso - The Promise of Tomorrow, Written Today.</p>
-                    <p>Contact: ${localStorage.getItem('bokamosoWhatsapp') || '+27 72 520 8972'} | ${localStorage.getItem('bokamosoEmail') || 'annadeliwe2017@gmail.com'}</p>
-                </div>
-                
-                <script>
-                    window.onload = function() { 
-                        setTimeout(function() { window.print(); }, 500);
-                    }
-                <\/script>
-            </body>
-            </html>
-        `);
-        printWindow.document.close();
-    }
-
-    // Send WhatsApp notification to customer
-    function sendWhatsAppNotification(orderId) {
-        const order = orders.find(o => o.id === orderId);
-        if (!order) return;
-        
-        const phoneNumber = order.customer?.phone?.replace(/[^0-9]/g, '') || '27725208972';
-        
-        const message = encodeURIComponent(
-            `Hello ${order.customer?.name || 'there'}! 👋\n\n` +
-            `Your order ${order.id} has been **${order.status}**.\n\n` +
-            `📦 Order Summary:\n` +
-            `Total: R ${(order.total || 0).toFixed(2)}\n` +
-            `Status: ${order.status}\n\n` +
-            `Track your order or contact us at ${localStorage.getItem('bokamosoWhatsapp') || '+27 72 520 8972'} for any questions.\n\n` +
-            `Thank you for shopping with Bokamoso ba Moso! ✨`
-        );
-        
-        window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
-    }
-
-    // Export orders to CSV
-    function exportOrdersToCSV() {
-        if (orders.length === 0) {
-            showNotification('No orders to export');
-            return;
+        // Settings
+        function showSettingsTab(tab) {
+            document.querySelectorAll('.settings-tab').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.querySelectorAll('.settings-panel').forEach(el => el.style.display = 'none');
+            document.getElementById(tab + 'Settings').style.display = 'block';
         }
-        
-        let csv = 'Order ID,Date,Customer Name,Email,Phone,Items Count,Subtotal,Shipping,Total,Status,Payment Status,Address\n';
-        
-        orders.forEach(order => {
-            csv += `"${order.id}","${order.date}","${order.customer?.name || ''}","${order.customer?.email || ''}","${order.customer?.phone || ''}",`;
-            csv += `"${order.items?.length || 0}","${order.subtotal || 0}","${order.shippingCost || 0}","${order.total || 0}","${order.status || 'pending'}","${order.payment?.status || 'pending'}","${order.shipping?.address || ''}"\n`;
-        });
-        
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `bokamoso-orders-${new Date().toISOString().split('T')[0]}.csv`;
-        a.click();
-        
-        showNotification('Orders exported successfully!');
-    }
 
-    // Settings
-    function showSettingsTab(tab) {
-        document.querySelectorAll('.settings-tab').forEach(el => el.classList.remove('active'));
-        event.target.classList.add('active');
-        
-        document.querySelectorAll('.settings-panel').forEach(el => el.style.display = 'none');
-        document.getElementById(tab + 'Settings').style.display = 'block';
-    }
-
-    function saveSettings() {
-        const storeName = document.getElementById('storeName').value;
-        const storeTagline = document.getElementById('storeTagline').value;
-        
-        // Save to localStorage
-        localStorage.setItem('bokamosoStoreName', storeName);
-        localStorage.setItem('bokamosoTagline', storeTagline);
-        
-        showNotification('Settings saved!');
-    }
-
-    function saveContactSettings() {
-        const whatsapp = document.getElementById('whatsappNumber').value;
-        const email = document.getElementById('contactEmail').value;
-        const hours = document.getElementById('businessHours').value;
-        
-        localStorage.setItem('bokamosoWhatsapp', whatsapp);
-        localStorage.setItem('bokamosoEmail', email);
-        localStorage.setItem('bokamosoHours', hours);
-        
-        showNotification('Contact info saved!');
-    }
-
-    function saveShippingSettings() {
-        showNotification('Shipping settings saved!');
-    }
-
-    function changePassword() {
-        const current = document.getElementById('currentPassword').value;
-        const newPass = document.getElementById('newPassword').value;
-        const confirm = document.getElementById('confirmPassword').value;
-        
-        if (newPass !== confirm) {
-            alert('New passwords do not match!');
-            return;
+        function saveSettings() {
+            const storeName = document.getElementById('storeName').value;
+            const storeTagline = document.getElementById('storeTagline').value;
+            
+            localStorage.setItem('bokamosoStoreName', storeName);
+            localStorage.setItem('bokamosoTagline', storeTagline);
+            showNotification('Settings saved!');
         }
-        
-        if (current !== 'bokamoso2024') {
-            alert('Current password is incorrect!');
-            return;
-        }
-        
-        showNotification('Password changed successfully!');
-        document.getElementById('currentPassword').value = '';
-        document.getElementById('newPassword').value = '';
-        document.getElementById('confirmPassword').value = '';
-    }
 
-    // Update website products (sync with main site)
-    function updateWebsiteProducts() {
-        localStorage.setItem('bokamosoProducts', JSON.stringify(products));
-        showNotification('Products synced with website!');
-    }
-
-    // Load data from localStorage
-    function loadFromLocalStorage() {
-        const savedProducts = localStorage.getItem('bokamosoProducts');
-        if (savedProducts) {
-            products = JSON.parse(savedProducts);
+        function saveContactSettings() {
+            const whatsapp = document.getElementById('whatsappNumber').value;
+            const email = document.getElementById('contactEmail').value;
+            const hours = document.getElementById('businessHours').value;
+            
+            localStorage.setItem('bokamosoWhatsapp', whatsapp);
+            localStorage.setItem('bokamosoEmail', email);
+            localStorage.setItem('bokamosoHours', hours);
+            showNotification('Contact info saved!');
         }
-        
-        const savedMessages = localStorage.getItem('bokamosoMessages');
-        if (savedMessages) {
-            messages = JSON.parse(savedMessages);
-        }
-        
-        const savedOrders = localStorage.getItem('bokamosoOrders');
-        if (savedOrders) {
-            orders = JSON.parse(savedOrders);
-        }
-        
-        const savedCustomers = localStorage.getItem('bokamosoCustomers');
-        if (savedCustomers) {
-            customers = JSON.parse(savedCustomers);
-        }
-        
-        loadProductsTable();
-        loadMessagesTable();
-        loadOrdersTable();
-        loadCustomersTable();
-        updateStats();
-    }
 
-    // Update stats
-    function updateStats() {
-        document.getElementById('totalProducts').textContent = products.length;
-        document.getElementById('totalOrders').textContent = orders.length;
-        
-        const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
-        document.getElementById('totalRevenue').textContent = `R ${totalRevenue.toFixed(2)}`;
-        
-        const unreadCount = messages.filter(m => !m.read).length;
-        document.getElementById('totalMessages').textContent = unreadCount;
-    }
+        function saveShippingSettings() {
+            showNotification('Shipping settings saved!');
+        }
 
-    // Show notification
-    function showNotification(message) {
-        // Create notification element
-        const notification = document.createElement('div');
-        notification.style.cssText = `
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: linear-gradient(90deg, var(--primary-red), var(--light-red));
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            z-index: 2000;
-            animation: slideIn 0.3s ease;
-        `;
-        notification.textContent = message;
-        
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.remove();
-        }, 3000);
-    }
+        function changePassword() {
+            const current = document.getElementById('currentPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            
+            if (newPass !== confirm) {
+                alert('New passwords do not match!');
+                return;
+            }
+            
+            if (current !== 'bokamoso2024') {
+                alert('Current password is incorrect!');
+                return;
+            }
+            
+            showNotification('Password changed successfully!');
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        }
 
-    // Add message from website contact form
-    window.addContactMessage = function(name, email, phone, subject, message) {
-        const newMessage = {
-            id: Date.now(),
-            name: name,
-            email: email,
-            phone: phone,
-            subject: subject,
-            message: message,
-            date: new Date().toLocaleString(),
-            read: false
+        // Sync with website
+        function updateWebsiteProducts() {
+            localStorage.setItem('bokamosoProducts', JSON.stringify(products));
+            showNotification('Products synced with website!');
+        }
+
+        // Load data from localStorage
+        function loadFromLocalStorage() {
+            const savedProducts = localStorage.getItem('bokamosoProducts');
+            if (savedProducts) {
+                products = JSON.parse(savedProducts);
+            }
+            
+            const savedMessages = localStorage.getItem('bokamosoMessages');
+            if (savedMessages) {
+                messages = JSON.parse(savedMessages);
+            }
+            
+            const savedOrders = localStorage.getItem('bokamosoOrders');
+            if (savedOrders) {
+                orders = JSON.parse(savedOrders);
+            }
+            
+            const savedCustomers = localStorage.getItem('bokamosoCustomers');
+            if (savedCustomers) {
+                customers = JSON.parse(savedCustomers);
+            }
+            
+            loadProductsTable();
+            loadMessagesTable();
+            loadOrdersTable();
+            loadCustomersTable();
+            updateStats();
+        }
+
+        // Update stats
+        function updateStats() {
+            document.getElementById('totalProducts').textContent = products.length;
+            document.getElementById('totalOrders').textContent = orders.length;
+            
+            const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
+            document.getElementById('totalRevenue').textContent = `R ${totalRevenue.toFixed(2)}`;
+            
+            const unreadCount = messages.filter(m => !m.read).length;
+            document.getElementById('totalMessages').textContent = unreadCount;
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Add order from website
+        window.addOrder = function(orderData) {
+            orders.push(orderData);
+            localStorage.setItem('bokamosoOrders', JSON.stringify(orders));
+            if (document.getElementById('dashboard').classList.contains('active')) {
+                loadOrdersTable();
+                updateStats();
+            }
+            showNotification('New order received!');
         };
-        
-        messages.push(newMessage);
-        localStorage.setItem('bokamosoMessages', JSON.stringify(messages));
-        loadMessagesTable();
-        updateStats();
-    };
 
-    // Add order from website
-    window.addOrder = function(orderData) {
-        orders.push(orderData);
-        localStorage.setItem('bokamosoOrders', JSON.stringify(orders));
-        loadOrdersTable();
-        updateStats();
-        showNotification('New order received!');
-    };
+        // Handle responsive menu
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                document.getElementById('sidebar').classList.remove('active');
+                document.getElementById('sidebarOverlay').classList.remove('active');
+            }
+        });
 
-    // Add export button to orders section
-    function addExportButtons() {
-        // Orders export button
-        const ordersHeader = document.querySelector('#ordersSection .section-header');
-        if (ordersHeader && !document.getElementById('exportOrdersBtn')) {
-            const exportOrdersBtn = document.createElement('button');
-            exportOrdersBtn.id = 'exportOrdersBtn';
-            exportOrdersBtn.className = 'add-btn';
-            exportOrdersBtn.innerHTML = '<i class="fas fa-download"></i> Export Orders';
-            exportOrdersBtn.onclick = exportOrdersToCSV;
-            exportOrdersBtn.style.marginLeft = '1rem';
-            ordersHeader.appendChild(exportOrdersBtn);
-        }
-        
-        // Customers export button
-        const customersHeader = document.querySelector('#customersSection .section-header');
-        if (customersHeader && !document.getElementById('exportCustomersBtn')) {
-            const exportCustomersBtn = document.createElement('button');
-            exportCustomersBtn.id = 'exportCustomersBtn';
-            exportCustomersBtn.className = 'add-btn';
-            exportCustomersBtn.innerHTML = '<i class="fas fa-download"></i> Export Customers';
-            exportCustomersBtn.onclick = exportCustomersToCSV;
-            exportCustomersBtn.style.marginLeft = '1rem';
-            customersHeader.appendChild(exportCustomersBtn);
-        }
-    }
+        // Close sidebar when clicking on overlay
+        document.getElementById('sidebarOverlay').addEventListener('click', function() {
+            toggleSidebar();
+        });
 
-    // Handle responsive menu
-    window.addEventListener('resize', function() {
-        if (window.innerWidth <= 768) {
-            document.getElementById('menuToggle').style.display = 'block';
-        } else {
-            document.getElementById('menuToggle').style.display = 'none';
-            document.getElementById('sidebar').classList.remove('active');
-        }
-    });
-
-    // Initialize
-    document.addEventListener('DOMContentLoaded', function() {
-        if (window.innerWidth <= 768) {
-            document.getElementById('menuToggle').style.display = 'block';
-        }
-        
-        // Add export buttons
-        setTimeout(addExportButtons, 1000);
-        
-        // Load data
-        loadFromLocalStorage();
-    });
-</script>
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFromLocalStorage();
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,49 @@
+[build]
+  functions = "netlify/functions"
+  publish = "."
+
+[functions]
+  node_bundler = "esbuild"
+  
+[dev]
+  functions = "netlify/functions"
+  publish = "."
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[[redirects]]
+  from = "/dashboard/*"
+  to = "/dashboard.html"
+  status = 200
+# Main redirect - serve index.html for all routes
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# [[redirects]]
+ # from = "/admin"
+  # to = "/admin.html"
+  # status = 200
+
+# Protect admin routes with role-based access
+# [[redirects]]
+ # from = "/dashboard"
+  # to = "/admin.html"
+  # status = 401
+  # force = true
+  # conditions = {Role = ["!admin"]}
+
+# [[redirects]]
+ # from = "/dashboard/*"
+  # to = "/admin.html"
+  # status = 401
+  # force = true
+  # conditions = {Role = ["!admin"]}
+
+# API routes
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
